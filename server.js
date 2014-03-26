@@ -2,7 +2,7 @@
 //Required files
 var express = require('express');
 var fs      = require('fs');
-var dbManager = require('./database');
+var dbManager = require('./config/database');
 var document  = require('./routes/document');
 
 //IP and port variables
@@ -16,22 +16,37 @@ if (typeof ipAddress === "undefined") {
 //Application and DB init
 var app = express();
 var db  = dbManager.connect();
+var DocumentModel = require('./models/documentModel').createModel(db);
 
 //Application uses
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(app.router);
+app.configure(function() {
+	app.use(express.json());
+	app.use(express.urlencoded());
+	app.use(express.methodOverride());
+	app.use(app.router);
+});
 
 //Routes definition
-app.get('/documents', document.getDocuments(db));
-app.post('/createdocument', document.createDocument(db));
+app.get('/document', document.getDocuments(db));
+app.post('/document', document.createDocument(db));
+app.delete('/document', document.deleteDocuments(db));
 app.get('/document/:id', document.showDocument(db));
 app.put('/document/:id', document.modifyDocument(db));
+app.delete('/document/:id', document.deleteDocument(db));
+
+app.get('*', function(req, res){ res.send(404); });
+
+setupTerminationHandlers();
+
+//Server starting
+app.listen(port, ipAddress, function() {
+    console.log('%s: Node server started on %s:%d ...',
+                Date(Date.now() ), ipAddress, port);
+});
 
 //Todo on exit
-var onExit = function(sig){
-	db.close(); //Close database connection
+function onExit(sig){
+	dbManager.close(); //Close database connection
     if (typeof sig === "string") {
        console.log('%s: Received %s - terminating server ...', Date(Date.now()), sig);
        process.exit(1);
@@ -41,7 +56,7 @@ var onExit = function(sig){
 
 
 //Setup termination handlers (for exit and a list of signals).
-var setupTerminationHandlers = function(){
+function setupTerminationHandlers(){
     process.on('exit', function() { onExit(); });
 
     ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
@@ -50,11 +65,3 @@ var setupTerminationHandlers = function(){
         process.on(element, function() { onExit(element); });
     });
 };
-
-setupTerminationHandlers();
-
-//Server starting
-app.listen(port, ipAddress, function() {
-    console.log('%s: Node server started on %s:%d ...',
-                Date(Date.now() ), ipAddress, port);
-});

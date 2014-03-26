@@ -1,8 +1,8 @@
 /**
  * Database connection configuration
  */
-var db = require('monk');
-
+var db = require('mongoose');
+var database;
 /**
  * OpenShift database login
  */
@@ -33,7 +33,7 @@ exports.connect = function() {
 	databaseHost 	 + ":" + databasePort 	  + "/" +
 	databaseName;
 	
-	var database = db(connectionString);
+	database = db.connect(connectionString);
 	
 	return database;
 }
@@ -42,6 +42,9 @@ exports.connect = function() {
  * Closing of database connection
  */
 exports.close = function() {
-	db.close();
+	if (database != "undefined") {
+		console.log('%s: Closing connection to database.', Date(Date.now()) );
+		database.connection.close()
+	}
 }
 
