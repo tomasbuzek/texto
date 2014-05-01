@@ -2,100 +2,18 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>jQuery splitter demo</title>
+<title>Texto - text editor</title>
+<link rel="stylesheet" type="text/css" href="editor.css">
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript" src="js/splitter.js"></script>
-<style type="text/css" media="all">
-html,body {
-	height: 100%;
-	width: 100%;
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-}
-
-#header {
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 50px;
-}
-#splitterContainer {
-	position: absolute;
-	top: 50px;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	margin: 0;
-	padding: 0;
-}
-
-#leftPane {
-	float: left;
-	width: 50%;
-	height: 100%;
-	border-top: solid 1px #9cbdff;
-	overflow: auto;
-}
-
-#rightPane {
-	float: right;
-	width: 50%;
-	height: 100%;
-	overflow: auto;
-}
-
-/* Splitbar styles; these are the default class names and required styles */
-.splitbarV {
-	float: left;
-	width: 6px;
-	height: 100%;
-	line-height: 0px;
-	font-size: 0px;
-	border-left: solid 1px #9cbdff;
-	border-right: solid 1px #9cbdff;
-	background: #fff url(js/img/panev.gif) 0% 50%;
-}
-.splitbuttonV {
-	margin-top: -41px;
-	margin-left: -4px;
-	top: 50%;
-	position: relative;
-	height: 83px;
-	width: 10px;
-	background: transparent url(js/img/panevc.gif) 10px 50%;
-}
-
-.splitbuttonV.invert {
-	margin-left: 0px;
-	background: transparent url(js/img/panevc.gif) 0px 50%;
-}
-.splitbarV.working,.splitbarH.working,.splitbuttonV.working,.splitbuttonH.working
-	{
-	-moz-opacity: .50;
-	filter: alpha(opacity = 50);
-	opacity: .50;
-}
-</style>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("#splitterContainer").splitter({
-			splitVertical : true,
-			A : $('#leftPane'),
-			B : $('#rightPane'),
-			closeableto : 100
-		});
-	});
-	/*
-	minAsize : 100,
-	maxAsize : 300,
-	*/
-</script>
+<script type="text/javascript" src="js/script.js"></script>
 </head>
 
 <body>
 	<div id="header">
-		jQuery splitter v1.1 demo. Download
+		<h1 id="logo">
+		 	<span>Texto - TeX editor</span>
+		</h1>
 	</div>
 	<div id="splitterContainer">
 		<div id="leftPane">
@@ -161,51 +79,7 @@ html,body {
 			<p>testing</p>
 		</div>
 		<div id="rightPane">
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
+			<iframe id="viewer" src="pdf.viewer/viewer.html?file=/pdf/helloworld.pdf"></iframe>
 		</div>
 	</div>
 </body>
