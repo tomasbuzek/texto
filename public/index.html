@@ -28,6 +28,24 @@ function changeSyntaxHighliting(value) {
 	if (value == "java") { editor.getSession().setMode('ace/mode/java'); }
 	if (value == "cpp") { editor.getSession().setMode('ace/mode/c_cpp'); }
 }
+
+function changeFontSize(increase) {
+	var deltaValue = 2;
+	var editor = ace.edit("editor");
+	var fontSizeStr = document.getElementById('editor').style.fontSize;
+	var fontSize = parseInt(fontSizeStr.substring(0, fontSizeStr.length-2));
+	if (!fontSize) { fontSize = 12; }
+	if (increase == true) {
+		if (fontSize+deltaValue < 24) {
+			document.getElementById('editor').style.fontSize = (fontSize+deltaValue) + "px";
+		}
+	} else {
+		if (fontSize-deltaValue > 8) {
+			document.getElementById('editor').style.fontSize = (fontSize-deltaValue) + "px";
+		}
+	}
+	
+}
 </script>
 </head>
 
@@ -40,14 +58,18 @@ function changeSyntaxHighliting(value) {
 	<div id="splitterContainer">
 		<div id="leftPane">
 			<div id="codeToolbar">
-				<form id="syntaxChangeContainer">
+				<div id="syntaxChangeContainer">
 					<label for="syntaxLanguage">Syntaxe:</label>
 					<select id="syntaxLanguage" onchange="changeSyntaxHighliting(this.options[this.selectedIndex].value)">
 						<option value="latex">LaTeX</option>
 						<option value="java">Java</option>
 						<option value="cpp">C++</option>
 					</select>
-				</form>
+				</div>
+				<div id="fontSizeContainer">
+					<input type="button" id="fontSizeButtonPlus" class="fontSizeButton" onclick="changeFontSize(true);"/>
+					<input type="button" id="fontSizeButtonMinus" class="fontSizeButton" onclick="changeFontSize(false);"/>
+				</div>
 				<div id="createPDFContainer">
 					<input value="Vytvořit PDF" type="button" id="createPDFButton" onclick="searchAce(true);"/>
 				</div>
