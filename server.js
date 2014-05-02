@@ -1,8 +1,9 @@
 #!/bin/env node
 //Required files
-var express = require('express');
-var connect = require('connect');
-var sharejs = require('share');
+var express    = require('express');
+var connect    = require('connect');
+var sharejs    = require('share');
+var path       = require('path');
 
 var fs      = require('fs');
 var dbManager = require('./config/database');
@@ -22,14 +23,8 @@ var db  = dbManager.connect();
 var DocumentModel = require('./models/documentModel').createModel(db);
 
 //Application uses
-app.configure(function() {
-	app.use(express.json());
-	app.use(express.urlencoded());
-	app.use(express.methodOverride());
-	app.use(app.router);
-	app.use(express.static(__dirname + '/public'));
-});
-
+app.use(require('body-parser')());
+app.use(require('method-override')())
 //Routes definition
 /*app.get('/document', document.getDocuments(db));
 app.post('/document', document.createDocument(db));
@@ -37,8 +32,19 @@ app.delete('/document', document.deleteDocuments(db));
 app.get('/document/:id', document.showDocument(db));
 app.put('/document/:id', document.modifyDocument(db));
 app.delete('/document/:id', document.deleteDocument(db));
-
 app.get('*', function(req, res){ res.send(404); });*/
+
+
+
+/*app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');*/
+//app.set('views', path.join(__dirname, 'public'));
+//app.engine('.html', require('jade').__express);
+app.use(express.static(__dirname + '/public'));
+
+/*var routes = require('./routes/index');
+app.use('/document', routes);*/
+
 
 setupTerminationHandlers();
 
@@ -46,7 +52,7 @@ var options = {db: {type: 'mongo'}};
 sharejs.server.attach(app, options);
 
 //Server starting
-app.listen(port, ipAddress, function() {
+var server = app.listen(port, ipAddress, function() {
     console.log('%s: Node server started on %s:%d ...',
                 Date(Date.now() ), ipAddress, port);
 });

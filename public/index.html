@@ -3,14 +3,32 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Texto - text editor</title>
-<link rel="stylesheet" type="text/css" href="editor.css">
+<link rel="stylesheet" type="text/css" href="css/editor.css">
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript" src="js/splitter.js"></script>
 <script type="text/javascript" src="js/script.js"></script>
+
 <script type="text/javascript" src="js/ace/ace.js" charset="utf-8"></script>
-<!-- <script type="text/javascript" src="js/channel/bcsocket.js"></script> -->
+<script type="text/javascript" src="js/ace/mode-c_cpp.js"></script>
+<script type="text/javascript" src="js/ace/mode-java.js"></script>
+<script type="text/javascript" src="js/ace/mode-latex.js"></script>
+<script type="text/javascript" src="js/channel/bcsocket.js"></script>
 <script type="text/javascript" src="js/share/share.js"></script>
 <script type="text/javascript" src="js/share/ace.js"></script>
+<script type="text/javascript">
+function searchAce(skip) {
+	var editor = ace.edit("editor");
+	var text = document.getElementById('searchTextValue').value;
+	editor.find(text, {backwards: false, skipCurrent: skip});
+}
+
+function changeSyntaxHighliting(value) {
+	var editor = ace.edit("editor");
+	if (value == "latex") { editor.getSession().setMode('ace/mode/latex'); }
+	if (value == "java") { editor.getSession().setMode('ace/mode/java'); }
+	if (value == "cpp") { editor.getSession().setMode('ace/mode/c_cpp'); }
+}
+</script>
 </head>
 
 <body>
@@ -21,17 +39,42 @@
 	</div>
 	<div id="splitterContainer">
 		<div id="leftPane">
-			<div id="editor" disabled></div>
+			<div id="codeToolbar">
+				<form id="syntaxChangeContainer">
+					<label for="syntaxLanguage">Syntaxe:</label>
+					<select id="syntaxLanguage" onchange="changeSyntaxHighliting(this.options[this.selectedIndex].value)">
+						<option value="latex">LaTeX</option>
+						<option value="java">Java</option>
+						<option value="cpp">C++</option>
+					</select>
+				</form>
+				<div id="createPDFContainer">
+					<input value="Vytvořit PDF" type="button" id="createPDFButton" onclick="searchAce(true);"/>
+				</div>
+				<div id="searchTextContainer">
+					<input type="text" id="searchTextValue" onkeyup="if (event.keyCode == 13) searchAce(true); else searchAce(false);"/>
+					<input type="button" id="searchTextButton" onclick="searchAce(true);"/>
+				</div>
+			</div>
+			<div id="editor"></div>
 			<script>
-				var editor = ace.edit("editor");
-				sharejs.open('hello', 'text', function(error, doc) {
-					if (error) {
-						console.log(error);
-					} else {
-						editor.disabled = false;
-						doc.attach_ace(editor);
-					}
-				});
+				window.onload = function() {
+					var editor = ace.edit("editor");
+					editor.setReadOnly(true);
+					
+					var docName = "hello";
+					var connection = new sharejs.Connection();
+					connection.openExisting(docName, function(error, doc) {
+						if (error) {
+							console.log(error);
+						} else {
+							doc.attach_ace(editor);
+							editor.setReadOnly(false);
+							var syntaxSelect = document.getElementById('syntaxLanguage');
+							changeSyntaxHighliting(syntaxSelect.options[syntaxSelect.selectedIndex].value);
+						}
+					});
+				}
 			</script>
 		</div>
 		
