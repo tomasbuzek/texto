@@ -1,13 +1,16 @@
 #!/bin/env node
 //Required files
 var express = require('express');
+var connect = require('connect');
+var sharejs = require('share');
+
 var fs      = require('fs');
 var dbManager = require('./config/database');
 var document  = require('./routes/document');
 
 //IP and port variables
 var ipAddress = process.env.OPENSHIFT_NODEJS_IP;
-var port 	  = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var port 	  = process.env.OPENSHIFT_NODEJS_PORT || 8000;
 if (typeof ipAddress === "undefined") {
     console.warn('Running on localhost');
     ipAddress = "127.0.0.1";
@@ -24,19 +27,23 @@ app.configure(function() {
 	app.use(express.urlencoded());
 	app.use(express.methodOverride());
 	app.use(app.router);
+	app.use(express.static(__dirname + '/public'));
 });
 
 //Routes definition
-app.get('/document', document.getDocuments(db));
+/*app.get('/document', document.getDocuments(db));
 app.post('/document', document.createDocument(db));
 app.delete('/document', document.deleteDocuments(db));
 app.get('/document/:id', document.showDocument(db));
 app.put('/document/:id', document.modifyDocument(db));
 app.delete('/document/:id', document.deleteDocument(db));
 
-app.get('*', function(req, res){ res.send(404); });
+app.get('*', function(req, res){ res.send(404); });*/
 
 setupTerminationHandlers();
+
+var options = {db: {type: 'mongo'}};
+sharejs.server.attach(app, options);
 
 //Server starting
 app.listen(port, ipAddress, function() {
@@ -44,7 +51,7 @@ app.listen(port, ipAddress, function() {
                 Date(Date.now() ), ipAddress, port);
 });
 
-//Todo on exit
+//Do on exit
 function onExit(sig){
 	dbManager.close(); //Close database connection
     if (typeof sig === "string") {

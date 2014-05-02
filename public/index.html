@@ -7,6 +7,10 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript" src="js/splitter.js"></script>
 <script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="js/ace/ace.js" charset="utf-8"></script>
+<!-- <script type="text/javascript" src="js/channel/bcsocket.js"></script> -->
+<script type="text/javascript" src="js/share/share.js"></script>
+<script type="text/javascript" src="js/share/ace.js"></script>
 </head>
 
 <body>
@@ -17,67 +21,20 @@
 	</div>
 	<div id="splitterContainer">
 		<div id="leftPane">
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
-			<p>testing</p>
+			<div id="editor" disabled></div>
+			<script>
+				var editor = ace.edit("editor");
+				sharejs.open('hello', 'text', function(error, doc) {
+					if (error) {
+						console.log(error);
+					} else {
+						editor.disabled = false;
+						doc.attach_ace(editor);
+					}
+				});
+			</script>
 		</div>
+		
 		<div id="rightPane">
 			<iframe id="viewer" src="pdf.viewer/viewer.html?file=/pdf/helloworld.pdf"></iframe>
 		</div>
