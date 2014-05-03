@@ -44,7 +44,9 @@ var options = {
 		type: 'mongo',
 		uri: connectionManager.getDatabaseURL()
 	},
-	port: connectionManager.getHostPort()
+	browserChannel: {
+		cors:"*"
+	}
 };
 sharejs.server.attach(app, options);
 

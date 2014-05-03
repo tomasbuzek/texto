@@ -12,9 +12,9 @@
 <script type="text/javascript" src="js/ace/mode-c_cpp.js"></script>
 <script type="text/javascript" src="js/ace/mode-java.js"></script>
 <script type="text/javascript" src="js/ace/mode-latex.js"></script>
-<script type="text/javascript" src="js/channel/bcsocket.js"></script>
-<script type="text/javascript" src="js/share/share.js"></script>
-<script type="text/javascript" src="js/share/ace.js"></script>
+<script type="text/javascript" src="/channel/bcsocket.js"></script>
+<script type="text/javascript" src="/share/share.uncompressed.js"></script>
+<script type="text/javascript" src="/share/ace.js"></script>
 <script type="text/javascript">
 function searchAce(skip) {
 	var editor = ace.edit("editor");
@@ -84,7 +84,14 @@ function changeFontSize(increase) {
 					var editor = ace.edit("editor");
 					editor.setReadOnly(true);
 					
-					sharejs.open('hello', 'text', function(error, doc) {
+					// Server options
+					var addr = 'http://' + location.hostname + (location.port ? ':'+location.port: '') + '/channel';
+					console.log(addr);
+			        var options = {
+			            origin: addr
+			        };
+					
+					sharejs.open('hello', 'text', options, function(error, doc) {
 						if (error) {
 							console.log(error);
 						} else {

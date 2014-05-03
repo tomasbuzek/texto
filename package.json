@@ -33,7 +33,7 @@
     "express": "~4.0.0",
     "body-parser": "~1.0.0",
     "method-override": "*",
-    "share": "~0.6.2",
+    "share": "~0.6.3",
     "mongodb": "*",
     "mongoose": "*"
   },
