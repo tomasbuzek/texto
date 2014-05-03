@@ -19,8 +19,8 @@ if (typeof ipAddress === "undefined") {
 
 //Application and DB init
 var app = express();
-var db  = dbManager.connect();
-var DocumentModel = require('./models/documentModel').createModel(db);
+var database  = dbManager.connect();
+var DocumentModel = require('./models/documentModel').createModel(database);
 
 //Application uses
 app.use(require('body-parser')());
@@ -48,7 +48,7 @@ app.use('/document', routes);*/
 
 setupTerminationHandlers();
 
-var options = {db: {type: 'mongo'}};
+var options = {db: {type: 'mongo'}, url: dbManager.getDatabaseURL()};
 sharejs.server.attach(app, options);
 
 //Server starting

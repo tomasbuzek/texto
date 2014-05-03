@@ -15,7 +15,8 @@ var databaseName 		= process.env.OPENSHIFT_MONGODB_DB_PASSWORD;
 /**
  * Database connection
  */
-exports.connect = function() {
+
+exports.getDatabaseURL = function() {
 	/**
 	 * Local database login
 	 */
@@ -32,6 +33,12 @@ exports.connect = function() {
 	databaseUsername + ":" + databasePassword + "@" +
 	databaseHost 	 + ":" + databasePort 	  + "/" +
 	databaseName;
+	
+	return connectionString;
+}
+
+exports.connect = function() {
+	var connectionString = exports.getDatabaseURL();
 	
 	database = db.connect(connectionString);
 	
