@@ -82,24 +82,24 @@ exports.closeDB = function() {
  */
 exports.getRedisIP = function() {
 	if (typeof process.env.OPENSHIFT_REDIS_DB_HOST === "undefined") {
-		return process.env.OPENSHIFT_REDIS_DB_HOST;
-	} else {
 		return "127.0.0.1";
+	} else {
+		return process.env.OPENSHIFT_REDIS_DB_HOST;
 	}
 }
 
 exports.getRedisPort = function() {
 	if (typeof process.env.OPENSHIFT_REDIS_DB_PORT === "undefined") {
-		return process.env.OPENSHIFT_REDIS_DB_PORT;
-	} else {
 		return 6379;
+	} else {
+		return process.env.OPENSHIFT_REDIS_DB_PORT;
 	}
 }
 
 exports.getRedisAuth = function() {
 	if (typeof process.env.OPENSHIFT_REDIS_DB_HOST === "undefined") {
-		return "ZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5";
-	} else {
 		return null;
+	} else {
+		return "ZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5";
 	}
 }
