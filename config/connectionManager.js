@@ -32,8 +32,8 @@ var database;
  */
 var databaseHost 		= process.env.OPENSHIFT_MONGODB_DB_HOST;
 var databasePort 		= process.env.OPENSHIFT_MONGODB_DB_PORT;
-var databaseUsername 	= process.env.OPENSHIFT_MONGODB_DB_USERNAME;
-var databasePassword 	= process.env.OPENSHIFT_MONGODB_DB_PASSWORD;
+var databaseUsername 	= "admin";//process.env.OPENSHIFT_MONGODB_DB_USERNAME;
+var databasePassword 	= "kP25MpqWgCET";//process.env.OPENSHIFT_MONGODB_DB_PASSWORD;
 var databaseName 		= "texto";
 
 /**
