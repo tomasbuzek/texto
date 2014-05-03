@@ -6,20 +6,12 @@ var sharejs    = require('share');
 var path       = require('path');
 
 var fs      = require('fs');
-var dbManager = require('./config/database');
+var connectionManager = require('./config/connectionManager');
 var document  = require('./routes/document');
-
-//IP and port variables
-var ipAddress = process.env.OPENSHIFT_NODEJS_IP;
-var port 	  = process.env.OPENSHIFT_NODEJS_PORT || 8000;
-if (typeof ipAddress === "undefined") {
-    console.warn('Running on localhost');
-    ipAddress = "127.0.0.1";
-};
 
 //Application and DB init
 var app = express();
-var database  = dbManager.connect();
+var database  = connectionManager.connectDB();
 var DocumentModel = require('./models/documentModel').createModel(database);
 
 //Application uses
@@ -51,21 +43,21 @@ setupTerminationHandlers();
 var options = {
 	db: {
 		type: 'mongo',
-		uri: dbManager.getDatabaseURL()
+		uri: connectionManager.getDatabaseURL()
 	},
-	port: port
+	port: connectionManager.getHostPort()
 };
 sharejs.server.attach(app, options);
 
 //Server starting
-var server = app.listen(port, ipAddress, function() {
+var server = app.listen(connectionManager.getHostPort(), connectionManager.getHostIP(), function() {
     console.log('%s: Node server started on %s:%d ...',
-                Date(Date.now() ), ipAddress, port);
+                Date(Date.now() ), connectionManager.getHostIP(), connectionManager.getHostPort());
 });
 
 //Do on exit
 function onExit(sig){
-	dbManager.close(); //Close database connection
+	connectionManager.closeDB(); //Close database connection
     if (typeof sig === "string") {
        console.log('%s: Received %s - terminating server ...', Date(Date.now()), sig);
        process.exit(1);

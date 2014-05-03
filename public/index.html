@@ -85,8 +85,10 @@ function changeFontSize(increase) {
 					editor.setReadOnly(true);
 					
 					var docName = "hello";
-					var connection = new sharejs.Connection('/channel');
-					connection.open(docName, function(error, doc) {
+					var addr = 'http://' + window.location.host + window.location.pathname + 'channel';
+					console.log(addr);
+					var connection = new sharejs.Connection(addr);
+					connection.open(docName, 'text', function(error, doc) {
 						if (error) {
 							console.log(error);
 						} else {

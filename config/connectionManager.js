@@ -1,3 +1,27 @@
+var ipAddress = process.env.OPENSHIFT_NODEJS_IP;
+var port 	  = process.env.OPENSHIFT_NODEJS_PORT || 8000;
+
+exports.getHostIP = function() {
+	if (typeof ipAddress === "undefined") {
+	    console.warn('Running on localhost');
+	    ipAddress = "127.0.0.1";
+	};
+	
+	return ipAddress;
+}
+
+exports.getHostPort = function() {
+	return port;
+}
+
+exports.getHostIPAndPort = function() {
+	return exports.getHostIP() + ":" + exports.getHostPort();
+}
+
+exports.getShareJSChannelUR = function() {
+	return exports.getHostIP() + ":" + exports.getHostPort() + "/js/channel";
+}
+
 /**
  * Database connection configuration
  */
@@ -15,7 +39,6 @@ var databaseName 		= "texto";
 /**
  * Database connection
  */
-
 exports.getDatabaseURL = function() {
 	/**
 	 * Local database login
@@ -36,7 +59,7 @@ exports.getDatabaseURL = function() {
 	return connectionString;
 }
 
-exports.connect = function() {
+exports.connectDB = function() {
 	var connectionString = exports.getDatabaseURL();
 	
 	database = db.connect(connectionString);
@@ -47,7 +70,7 @@ exports.connect = function() {
 /**
  * Closing of database connection
  */
-exports.close = function() {
+exports.closeDB = function() {
 	if (database != "undefined") {
 		console.log('%s: Closing connection to database.', Date(Date.now()) );
 		database.connection.close()
