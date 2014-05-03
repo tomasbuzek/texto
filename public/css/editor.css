@@ -184,6 +184,7 @@ h1#logo span {
 }
 #login {
 	float: right;
+	color: white;
 }
 #login a {
 	color: white;

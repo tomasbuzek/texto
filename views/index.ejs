@@ -55,7 +55,11 @@ function changeFontSize(increase) {
 		 	<span>Texto - TeX editor</span>
 		</h1>
 		<div id="login">
-			<a href="/auth/google">Login with Google</a>
+			<% if(user) { %>
+				Logged in as <%= user.name %> (<a href="/logout">Log out</a>) <img src="<%= user.picture %>" width="40">
+			<% } else { %>
+				<a href="/auth/google">Login with Google</a>
+			<% } %>
 		</div>
 	</div>
 	<div id="splitterContainer">

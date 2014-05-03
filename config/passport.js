@@ -21,21 +21,19 @@ module.exports = function(passport) {
     function(token, refreshToken, profile, done) {
 		console.log(profile);
 		process.nextTick(function() {
-			console.log('tick');
-	        User.findOne({ 'id' : profile.id }, function(err, user) {
-	            if (err)
-					console.log('err');
+	        User.findOne({ '_id' : profile.id }, function(err, user) {
+	            if (err) {
 	                return done(err);
+				}
 	            if (user) {
-					console.log('user');
 	                return done(null, user);
 	            } else {
-					console.log('new');
 	                var newUser          = new User();
-	                newUser.id    = profile.id;
+	                newUser._id    = profile.id;
 	                newUser.token = token;
 	                newUser.name  = profile.displayName;
 	                newUser.email = profile.emails[0].value;
+					newUser.picture = profile._json.picture;
 	                newUser.save(function(err) {
 	                    if (err)
 	                        throw err;

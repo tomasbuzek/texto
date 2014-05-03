@@ -32,6 +32,7 @@ require('./routes/passport')(app, passport);
 var document  = require('./routes/document');
 
 // models ======================================================================
+var database  = connectionManager.connectDB();
 /*var documentModel = require('./models/documentModel').createModel(database);*/
 
 // launch ======================================================================
