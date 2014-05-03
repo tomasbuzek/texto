@@ -84,8 +84,7 @@ function changeFontSize(increase) {
 					var editor = ace.edit("editor");
 					editor.setReadOnly(true);
 					
-					var docName = "hello";
-					sharejs.open(docName, 'text', function(error, doc) {
+					sharejs.open('hello', 'text', function(error, doc) {
 						if (error) {
 							console.log(error);
 						} else {
