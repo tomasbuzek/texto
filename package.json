@@ -36,6 +36,7 @@
     "connect": "*",
     "share": "<0.7",
     "mongodb": "*",
+    "mongoose": "*",
     "jade": "~1.3.0"
   },
   "devDependencies": {},
