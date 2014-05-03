@@ -35,7 +35,7 @@
     "body-parser": "~1.0.0",
     "method-override": "*",
     "share": "<0.7",
-    "mongodb": "*",
+    "mongodb": "=1.4.3",
     "mongoose": "*"
   },
   "devDependencies": {},
