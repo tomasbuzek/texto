@@ -1,0 +1,45 @@
+doctype html
+html(lang="en")
+	head
+		meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+		title Texto - text editor
+		link(rel="stylesheet" type="text/css" href="/css/editor.css")
+		script(type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js")
+		script(type="text/javascript" src="/js/splitter.js")
+		script(type="text/javascript" src="/js/script.js")
+		
+		script(type="text/javascript" src="/js/ace/ace.js" charset="utf-8")
+		script(type="text/javascript" src="/js/ace/mode-c_cpp.js")
+		script(type="text/javascript" src="/js/ace/mode-java.js")
+		script(type="text/javascript" src="/js/ace/mode-latex.js")
+		script(type="text/javascript" src="/channel/bcsocket-uncompressed.js")
+		script(type="text/javascript" src="/share/share.uncompressed.js")
+		script(type="text/javascript" src="/share/ace.js")
+
+	body
+		div(id="header")
+			h1(id="logo")
+				span Texto - TeX editor
+		div(id="splitterContainer")
+			div(id="leftPane")
+				div(id="codeToolbar")
+					div(id="syntaxChangeContainer")
+						label(for="syntaxLanguage") Syntaxe:
+						select(id="syntaxLanguage" onchange="changeSyntaxHighliting(this.options[this.selectedIndex].value)")
+							option(value="latex") LaTeX
+							option(value="java") Java
+							option(value="cpp") C++
+					div(id="fontSizeContainer")
+						input(type="button" id="fontSizeButtonPlus" class="fontSizeButton" onclick="changeFontSize(true);")
+						input(type="button" id="fontSizeButtonMinus" class="fontSizeButton" onclick="changeFontSize(false);")
+					div(id="createPDFContainer")
+						input(value="Vytvořit PDF" type="button" id="createPDFButton" onclick="searchAce(true);")
+					div(id="searchTextContainer")
+						input(type="text" id="searchTextValue" onkeyup="if (event.keyCode == 13) searchAce(true); else searchAce(false);")
+						input(type="button" id="searchTextButton" onclick="searchAce(true);")
+				div(id="editor")
+				script.
+					documentID="#{id}";
+				script(type="text/javascript" src="/js/docTools.js")
+			div(id="rightPane")
+				iframe(id="viewer" src="/pdf.viewer/viewer.html?file=/pdf/helloworld.pdf")

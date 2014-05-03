@@ -37,7 +37,8 @@
     "share": "<0.7",
     "mongodb": "=1.4.3",
     "redis": "*",
-    "mongoose": "*"
+    "mongoose": "*",
+    "jade": "*"
   },
   "devDependencies": {},
   "bundleDependencies": [],
