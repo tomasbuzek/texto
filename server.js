@@ -43,11 +43,13 @@ var app = connect(
 );
 
 setupTerminationHandlers();
-
+//uri: connectionManager.getDatabaseURL()
 var options = {
 	db: {
-		type: 'mongo',
-		uri: connectionManager.getDatabaseURL()
+		type: 'redis',
+		hostname: connectionManager.getRedisIP(),
+		port: connectionManager.getRedisPort(),
+		auth: connectionManager.getRedisAuth()
 	},
 	browserChannel: {
 		cors:"*"

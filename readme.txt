@@ -1,3 +1,11 @@
+Redis
+--------------------------------------
+Redis is now configured with a default password ZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5
+You can configure various Redis scaling and persistence modes by setting
+environment variables - consult the cartridge README for more info.
+--------------------------------------
+
+
 MongoDB
 --------------------------------------
 MongoDB 2.4 database added.  Please make note of these credentials:
