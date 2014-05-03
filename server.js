@@ -41,8 +41,7 @@ setupTerminationHandlers();
 
 var options = {
 	db: {
-		type: 'mongo',
-		uri: connectionManager.getDatabaseURL()
+		type: 'none'
 	},
 	browserChannel: {
 		cors:"*"

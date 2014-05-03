@@ -92,8 +92,10 @@ function changeFontSize(increase) {
 			            origin: addr
 			        };
 					
-					sharejs.open('hello', 'text', options, function(error, doc) {
+					var connection = new sharejs.Connection(addr);
+					connection.open('doc', 'text', function(error, doc) {
 						if (error) {
+							console.log("Open document error:");
 							console.log(error);
 						} else {
 							doc.attach_ace(editor);
