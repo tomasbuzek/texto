@@ -85,7 +85,8 @@ function changeFontSize(increase) {
 					editor.setReadOnly(true);
 					
 					// Server options
-					var addr = 'http://' + location.hostname + (location.port ? ':'+location.port: '') + '/channel';
+					var addr = 'http://' + location.hostname + ':8000' + '/channel';
+					//addr = 'http://texto-straka.rhcloud.com:8000/channel';
 					console.log(addr);
 			        var options = {
 			            origin: addr

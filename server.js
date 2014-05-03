@@ -14,8 +14,8 @@ var database  = connectionManager.connectDB();
 var DocumentModel = require('./models/documentModel').createModel(database);
 
 //Application uses
-app.use(require('body-parser')());
-app.use(require('method-override')())
+//app.use(require('body-parser')());
+//app.use(require('method-override')())
 //Routes definition
 /*app.get('/document', document.getDocuments(db));
 app.post('/document', document.createDocument(db));
