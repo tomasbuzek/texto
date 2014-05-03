@@ -1,7 +1,6 @@
 #!/bin/env node
 //Required files
 var express    = require('express');
-var connect    = require('connect');
 var sharejs    = require('share');
 var path       = require('path');
 
