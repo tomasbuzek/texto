@@ -1,6 +1,7 @@
 #!/bin/env node
 //Required files
 var express    = require('express');
+var connect    = require('connect');
 var sharejs    = require('share');
 var path       = require('path');
 
@@ -9,7 +10,7 @@ var connectionManager = require('./config/connectionManager');
 var document  = require('./routes/document');
 
 //Application and DB init
-var app = express();
+//var app = express();
 var database  = connectionManager.connectDB();
 var DocumentModel = require('./models/documentModel').createModel(database);
 
@@ -31,11 +32,15 @@ app.get('*', function(req, res){ res.send(404); });*/
 app.set('view engine', 'jade');*/
 //app.set('views', path.join(__dirname, 'public'));
 //app.engine('.html', require('jade').__express);
-app.use(express.static(__dirname + '/public'));
+//app.use(express.static(__dirname + '/public'));
 
 /*var routes = require('./routes/index');
 app.use('/document', routes);*/
 
+var app = connect(
+		connect.logger(),
+		connect.static(__dirname + '/public')
+);
 
 setupTerminationHandlers();
 

@@ -12,7 +12,7 @@
 <script type="text/javascript" src="js/ace/mode-c_cpp.js"></script>
 <script type="text/javascript" src="js/ace/mode-java.js"></script>
 <script type="text/javascript" src="js/ace/mode-latex.js"></script>
-<script type="text/javascript" src="/channel/bcsocket.js"></script>
+<script type="text/javascript" src="/channel/bcsocket-uncompressed.js"></script>
 <script type="text/javascript" src="/share/share.uncompressed.js"></script>
 <script type="text/javascript" src="/share/ace.js"></script>
 <script type="text/javascript">
@@ -86,14 +86,14 @@ function changeFontSize(increase) {
 					
 					// Server options
 					var addr = 'http://' + location.hostname + ':8000' + '/channel';
-					//addr = 'http://texto-straka.rhcloud.com:8000/channel';
+					//addr = 'http://texto-straka.rhcloud.com/channel';
 					console.log(addr);
 			        var options = {
 			            origin: addr
 			        };
 					
-					var connection = new sharejs.Connection(addr);
-					connection.open('hello', 'text', function(error, doc) {
+					//var connection = new sharejs.Connection(addr);
+					sharejs.open('hello', 'text', addr, function(error, doc) {
 						if (error) {
 							console.log("Open document error:");
 							console.log(error);

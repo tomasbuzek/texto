@@ -53,15 +53,15 @@ exports.getDatabaseURL = function() {
 	
 	var connectionString =  "mongodb://" +
 	databaseUsername + ":" + databasePassword + "@" +
-	databaseHost 	 + ":" + databasePort 	  + "/" +
-	databaseName;
+	databaseHost 	 + ":" + databasePort;// 	  + "/" +
+	//databaseName;
 	
 	return connectionString;
 }
 
 exports.connectDB = function() {
 	var connectionString = exports.getDatabaseURL();
-	
+	console.log(connectionString);
 	database = db.connect(connectionString);
 	
 	return database;
