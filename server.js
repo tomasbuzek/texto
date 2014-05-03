@@ -48,7 +48,13 @@ app.use('/document', routes);*/
 
 setupTerminationHandlers();
 
-var options = {db: {type: 'mongo'}, url: dbManager.getDatabaseURL()};
+var options = {
+	db: {
+		type: 'mongo',
+		uri: dbManager.getDatabaseURL()
+	},
+	port: port
+};
 sharejs.server.attach(app, options);
 
 //Server starting
