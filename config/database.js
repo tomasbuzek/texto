@@ -10,7 +10,7 @@ var databaseHost 		= process.env.OPENSHIFT_MONGODB_DB_HOST;
 var databasePort 		= process.env.OPENSHIFT_MONGODB_DB_PORT;
 var databaseUsername 	= process.env.OPENSHIFT_MONGODB_DB_USERNAME;
 var databasePassword 	= process.env.OPENSHIFT_MONGODB_DB_PASSWORD;
-var databaseName 		= process.env.OPENSHIFT_MONGODB_DB_PASSWORD;
+var databaseName 		= "texto";
 
 /**
  * Database connection
@@ -24,7 +24,6 @@ exports.getDatabaseURL = function() {
 		console.warn('Localhost database connection');
 		databaseUsername = "";
 		databasePassword = "";
-		databaseName = "texto";
 		databaseHost = "127.0.0.1";
 		databasePort = 27017;
 	};
