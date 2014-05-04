@@ -84,7 +84,7 @@ function setEditorShortcuts(editor) {
 	    name: 'LaTeX - PDF',
 	    bindKey: {win: 'Ctrl-P',  mac: 'Command-P'},
 	    exec: function(editor) {
-	    	loadPDF();
+	    	sendCreatePDFMessage();
 	    },
 	    readOnly: true
 	});

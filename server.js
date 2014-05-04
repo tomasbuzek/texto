@@ -19,6 +19,7 @@ var database  = connectionManager.connectDB();
 var openedSockets = {};
 var openedClients = {};
 var openedDocuments = {};
+io.set('transports', [ 'xhr-polling', 'jsonp-polling', 'htmlfile' ]);
 io.sockets.on('connection', function (socket) {
 	socket.emit('news', { hello: 'world' });
 	socket.on('documentID', function (data) {
