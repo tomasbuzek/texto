@@ -128,7 +128,7 @@ h1#logo span {
 }
 #statusBarViewers {
 	display: inline-block;
-	width: 25%;
+	width: 170px;
 	margin-top: 4px;
 	margin-left: 2px;
 }

@@ -129,6 +129,9 @@ function loadDoc() {
 			} else {
 				doc.attach_ace(editor);
 				editor.setReadOnly(false);
+				editor.setTheme("ace/theme/twilight");
+				editor.setShowPrintMargin(false);
+				editor.getSession().setUseWrapMode(true);
 				var syntaxSelect = document.getElementById('syntaxLanguage');
 				changeSyntaxHighliting("latex");
 				showLog(false);
