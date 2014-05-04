@@ -39,7 +39,15 @@
     "redis": "*",
     "mongoose": "*",
     "jade": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+    "passport": "~0.1.17",
+    "passport-local": "~0.1.6",
+    "passport-google-oauth": "~0.1.5",
+    "morgan": "*",
+    "cookie-parser": "*",
+    "express-session": "*",
+    "bcrypt-nodejs": "latest",
+    "connect-flash": "*"
   },
   "devDependencies": {},
   "bundleDependencies": [],
