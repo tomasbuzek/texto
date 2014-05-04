@@ -1,0 +1,24 @@
+doctype html
+html(lang="en")
+	head
+		meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+		title Texto - text editor
+		link(rel="stylesheet" type="text/css" href="/css/editor.css")
+
+	body
+		div(id="header")
+			h1(id="logo")
+				span Texto - TeX editor
+			div(id="login")
+				if user
+					| Logged in as #{user.name} 
+					a(href="/logout") Log out 
+					img(src=user.picture width="40")
+				else
+					a(href="/auth/google") Login with Google
+
+		div(id="splitterContainer")
+			if user
+				| Seznam dokumentů uživatele ???
+			else
+				| Vytvořte nový anonymní dokument nebo se přihlašte ???

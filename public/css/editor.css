@@ -6,6 +6,8 @@ html,body {
 	overflow: hidden;
 }
 h1#logo {
+	display: block;
+	float: left;
 	margin: 5px 0 0 10px;
 	padding: 0;
 	width: 140px;
@@ -194,4 +196,11 @@ h1#logo span {
 	text-align: center;
 	color: white;
 	background-color: green;
+}
+#login {
+	float: right;
+	color: white;
+}
+#login a {
+	color: white;
 }
