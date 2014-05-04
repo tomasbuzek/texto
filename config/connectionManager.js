@@ -13,7 +13,11 @@ exports.getDataPath = function() {
 			fs.mkdirSync(dataPath);
 		}
 	};
-	var docsDataPath = path.join(dataPath, "docs/");
+	return dataPath;
+}
+
+exports.getDocsPath = function() {
+	var docsDataPath = path.join(exports.getDataPath(), "docs/");
 	if (!fs.existsSync(docsDataPath)){
 		fs.mkdirSync(docsDataPath);
 	}

@@ -57,7 +57,7 @@ router.get('/document/:id/pdf', function(req, res) {
 	var app = req.app;
 	var connectionManager = req.connectionManager;
 	var latexpath = connectionManager.getLaTeXPath();
-	var dataPath = getDocumentFolderPath(connectionManager.getDataPath(), id);
+	var dataPath = getDocumentFolderPath(connectionManager.getDocsPath(), id);
 	if (!fs.existsSync(dataPath)){ fs.mkdirSync(dataPath); }
 	if (id) {
 		documentToTempFile(id, app, dataPath, function(error, sourcepath) {
@@ -112,7 +112,7 @@ router.get('/document/:id/delete', function(req, res) {
 	var app = req.app;
 	var connectionManager = req.connectionManager;
 	var latexpath = connectionManager.getLaTeXPath();
-	var dataPath = getDocumentFolderPath(connectionManager.getDataPath(), id);
+	var dataPath = getDocumentFolderPath(connectionManager.getDocsPath(), id);
 	if (id) {
 		app.model.delete(id, function(error, doc) {
 			if (error) {
