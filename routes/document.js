@@ -45,10 +45,8 @@ function createPDF(sourcefile, app, dataPath, latexpath, next) {
 	exec(command, {cwd: dataPath}, function (error, stdout, stderr) {
 		var pdffilename = sourcefile.substring(0, sourcefile.length-3);
 		if (error) {
-			console.log(stderr);
 			next(error, pdffilename);
 		} else {
-			console.log(stdout);
 			next(null, pdffilename);
 		}
 	});

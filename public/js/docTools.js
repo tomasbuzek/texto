@@ -143,7 +143,7 @@ loadDoc();
 
 var socket;
 function initSocket() {
-	var addr = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+	var addr = window.location.protocol + "//" + window.location.hostname + ':8000';
 	socket = io.connect(addr);
 	socket.on('news', function (data) {
 		console.log(data);
