@@ -16,10 +16,22 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var database  = connectionManager.connectDB();
 
+function updateViewersNumber(id) {
+	if (openedDocuments[id] != null) {
+		if (openedDocuments[id].clients != null) {
+			var numViewers = openedDocuments[id].clients.length;
+			openedDocuments[id].clients.forEach(function(entry) {
+				if (openedSockets[entry]) {
+					openedSockets[entry].emit('numberOfViewersChange', { viewers: numViewers });
+				}
+			});
+		}
+	}
+}
 var openedSockets = {};
 var openedClients = {};
 var openedDocuments = {};
-io.set('transports', [ 'xhr-polling']);//, 'jsonp-polling', 'htmlfile' ]);
+//io.set('transports', [ 'xhr-polling', 'jsonp-polling', 'htmlfile' ]);
 io.sockets.on('connection', function (socket) {
 	socket.emit('news', { hello: 'world' });
 	socket.on('documentID', function (data) {
@@ -29,16 +41,17 @@ io.sockets.on('connection', function (socket) {
 		openedDocuments[data.docID].clients.push(socket.id);
 		openedClients[socket.id] = data.docID;
 		openedSockets[socket.id] = socket;
+		updateViewersNumber(data.docID);
 		console.log("Client:" + socket.id + " opened Document:" + openedClients[socket.id]);
 	});
 	socket.on('createPDF', function(data) {
 		if (data) {
 			if (data.docID) {
-				document.convertToPDF(data.docID, app, connectionManager, function (error, id) {
+				document.convertToPDF(data.docID, app, connectionManager, function (log, id, error) {
 					if (openedDocuments[id] != null) {
 						if (openedDocuments[id].clients != null) {
 							openedDocuments[id].clients.forEach(function(entry) {
-								openedSockets[entry].emit('pdfCreated', { url: 'http://' });
+								openedSockets[entry].emit('pdfCreated', { log: log, error: error });
 							});
 						}
 					}
@@ -52,6 +65,8 @@ io.sockets.on('connection', function (socket) {
 		openedDocuments[document].clients.splice(clients.indexOf(socket.id), 1);
 		openedClients[socket.id] = null;
 		openedSockets[socket.id] = null;
+		openedDocuments[document].clients
+		updateViewersNumber(document);
 		console.log("Client:" + socket.id + " closed Document:" + document);
     });
 });
@@ -61,7 +76,6 @@ var DocumentModel = require('./models/documentModel').createModel(database);
 //Application uses
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-//app.use(require('method-override')())
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

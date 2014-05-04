@@ -41,12 +41,14 @@ function documentToTempFile(id, app, dataPath, next) {
 function createPDF(sourcefile, app, dataPath, latexpath, next) {
 	var command = latexpath + "pdflatex -interaction=nonstopmode " + sourcefile;
 	console.log(command);
+	
 	exec(command, {cwd: dataPath}, function (error, stdout, stderr) {
+		var pdffilename = sourcefile.substring(0, sourcefile.length-3);
 		if (error) {
 			console.log(stderr);
-			next(error, null);
+			next(error, pdffilename);
 		} else {
-			var pdffilename = sourcefile.substring(0, sourcefile.length-3) + "pdf";
+			console.log(stdout);
 			next(null, pdffilename);
 		}
 	});
@@ -84,12 +86,15 @@ exports.convertToPDF = function(id, app, connectionManager, next) {
 			if (error) {
 				next("Document (ID:" + id + ") PDF creation failed.", null);
 			} else {
-				createPDF(sourcepath, app, dataPath, latexpath, function(error, pdffilename){
-					if (error) {
-						next("Document (ID:" + id + ") PDF creation failed.", null);
-					} else {
-						next(null, id);
-					}
+				createPDF(sourcepath, app, dataPath, latexpath, function(errorTeX, pdffilename){
+					var logfilename = path.join(dataPath, pdffilename) + "log";
+					fs.readFile(logfilename, 'utf8', function(error, data) {
+						if (error) {
+							next(error, id, errorTeX);
+						} else {
+							next(data, id, errorTeX);
+						}
+					});
 				});
 			}
 		});

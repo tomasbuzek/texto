@@ -32,9 +32,35 @@ function changeFontSize(increase) {
 	
 }
 
+function drawLogRed(draw) {
+	var logAreaElement = document.getElementById('logArea');
+	if (draw) {
+		logAreaElement.className = "logAreaError";
+	} else {
+		logAreaElement.className = "logAreaNormal";
+	}
+}
+
+function showLog(show) {
+	var logAreaElement = document.getElementById('logArea');
+	var logAreaButton = document.getElementById('buttonShowLog');
+	if (show == null) {
+		show = logAreaElement.style.display == "none";
+	}
+	if (show) {
+		logAreaElement.style.display = "block";
+		logAreaButton.value = "Skrýt log";
+	} else {
+		logAreaElement.style.display = "none"
+		logAreaButton.value = "Zobrazit log";
+	}
+}
+
 function loadPDF() {
 	var destUrl = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + "/document/" + documentID + "/pdffile";
 	document.getElementById('viewer').src = "/pdf.viewer/viewer.html?file=" + destUrl;
+	document.getElementById('createPDFButton').className = "pdfButtonEnabled";
+	document.getElementById('createPDFButton').disabled = false;
 }
 
 function boldText(editor) {
@@ -105,6 +131,7 @@ function loadDoc() {
 				editor.setReadOnly(false);
 				var syntaxSelect = document.getElementById('syntaxLanguage');
 				changeSyntaxHighliting("latex");
+				showLog(false);
 				setEditorShortcuts(editor);
 				loadPDF();
 			}
@@ -124,8 +151,23 @@ function initSocket() {
 	});
 	socket.on('pdfCreated', function(data) {
 		if (data) {
-			if (data.url != null) {
-				loadPDF(data.url);
+			if (data.log != null) {
+				document.getElementById('logArea').innerHTML = data.log.replace(/\n/g, "<br />");
+			}
+			if (data.error != null) {
+				showLog(true);
+				drawLogRed(true);
+			} else {
+				showLog(false);
+				drawLogRed(false);
+			}
+			loadPDF();
+		}
+	});
+	socket.on('numberOfViewersChange', function(data) {
+		if (data) {
+			if (data.viewers != null) {
+				document.getElementById("statusBarViewers").innerHTML = "Počet uživatelů online: " + data.viewers;
 			}
 		}
 	});
@@ -134,6 +176,8 @@ function initSocket() {
 function sendCreatePDFMessage() {
 	if (socket) {
 		socket.emit('createPDF', { docID: documentID });
+		document.getElementById('createPDFButton').className = "pdfButtonDisabled";
+		document.getElementById('createPDFButton').disabled = true;
 	}
 }
 
