@@ -28,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req,res,next){
     req.database = database;
     req.app = app;
+    req.connectionManager = connectionManager;
     next();
 });
 

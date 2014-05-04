@@ -1,5 +1,24 @@
+var fs = require('fs');
+
 var ipAddress = process.env.OPENSHIFT_NODEJS_IP;
 var port 	  = process.env.OPENSHIFT_NODEJS_PORT || 8000;
+
+var dataPath = process.env.OPENSHIFT_DATA_DIR;
+
+exports.getDataPath = function() {
+	if (typeof dataPath === "undefined") {
+		dataPath = "./data/";
+		if (!fs.existsSync(dataPath)){
+			fs.mkdirSync(dataPath);
+		}
+	};
+	var docsDataPath = dataPath + "docs/";
+	if (!fs.existsSync(docsDataPath)){
+		fs.mkdirSync(docsDataPath);
+	}
+	return docsDataPath;
+}
+
 
 exports.getHostIP = function() {
 	if (typeof ipAddress === "undefined") {

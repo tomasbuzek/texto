@@ -29,6 +29,11 @@ function changeFontSize(increase) {
 	
 }
 
+function loadPDF() {
+	var destUrl = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + "/document/" + documentID + "/pdf";
+	document.getElementById('viewer').src = "/pdf.viewer/viewer.html?file=" + destUrl;
+}
+
 function loadDoc() {
 	window.onload = function() {
 		var editor = ace.edit("editor");
@@ -44,6 +49,7 @@ function loadDoc() {
 				editor.setReadOnly(false);
 				var syntaxSelect = document.getElementById('syntaxLanguage');
 				changeSyntaxHighliting(syntaxSelect.options[syntaxSelect.selectedIndex].value);
+				loadPDF();
 			}
 		});
 	}
