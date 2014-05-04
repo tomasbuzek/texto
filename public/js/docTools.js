@@ -6,9 +6,12 @@ function searchAce(skip) {
 
 function changeSyntaxHighliting(value) {
 	var editor = ace.edit("editor");
-	if (value == "latex") { editor.getSession().setMode('ace/mode/latex'); }
-	if (value == "java") { editor.getSession().setMode('ace/mode/java'); }
-	if (value == "cpp") { editor.getSession().setMode('ace/mode/c_cpp'); }
+	var index = 0;
+	if (value == "plain") { editor.getSession().setMode('ace/mode/plain_text'); index = 0; }
+	if (value == "latex") { editor.getSession().setMode('ace/mode/latex'); index = 1; }
+	if (value == "java") { editor.getSession().setMode('ace/mode/java'); index = 2; }
+	if (value == "cpp") { editor.getSession().setMode('ace/mode/c_cpp'); index = 3; }
+	document.getElementById('syntaxLanguage').selectedIndex = index;
 }
 
 function changeFontSize(increase) {
@@ -101,7 +104,7 @@ function loadDoc() {
 				doc.attach_ace(editor);
 				editor.setReadOnly(false);
 				var syntaxSelect = document.getElementById('syntaxLanguage');
-				changeSyntaxHighliting(syntaxSelect.options[syntaxSelect.selectedIndex].value);
+				changeSyntaxHighliting("latex");
 				setEditorShortcuts(editor);
 				loadPDF();
 			}

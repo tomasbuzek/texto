@@ -13,7 +13,7 @@ exports.getDataPath = function() {
 			fs.mkdirSync(dataPath);
 		}
 	};
-	var docsDataPath = dataPath + "docs/";
+	var docsDataPath = path.join(dataPath, "docs/");
 	if (!fs.existsSync(docsDataPath)){
 		fs.mkdirSync(docsDataPath);
 	}
@@ -24,7 +24,7 @@ exports.getLaTeXPath = function() {
 	if (typeof process.env.OPENSHIFT_DATA_DIR === "undefined") {
 		return "";
 	} else {
-		return path.join(exports.getDataPath, '/latex/bin/x86_64-linux/');
+		return path.join(exports.getDataPath(), '/latex/bin/x86_64-linux/');
 	}
 }
 

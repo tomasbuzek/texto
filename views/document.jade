@@ -12,6 +12,7 @@ html(lang="en")
 		script(type="text/javascript" src="/js/ace/mode-c_cpp.js")
 		script(type="text/javascript" src="/js/ace/mode-java.js")
 		script(type="text/javascript" src="/js/ace/mode-latex.js")
+		script(type="text/javascript" src="/js/ace/mode-plain_text.js")
 		script(type="text/javascript" src="/channel/bcsocket-uncompressed.js")
 		script(type="text/javascript" src="/share/share.uncompressed.js")
 		script(type="text/javascript" src="/share/ace.js")
@@ -26,6 +27,7 @@ html(lang="en")
 					div(id="syntaxChangeContainer")
 						label(for="syntaxLanguage") Syntaxe:
 						select(id="syntaxLanguage" onchange="changeSyntaxHighliting(this.options[this.selectedIndex].value)")
+							option(value="plain") Plain
 							option(value="latex") LaTeX
 							option(value="java") Java
 							option(value="cpp") C++
