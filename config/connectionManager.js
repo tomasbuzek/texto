@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 
 var ipAddress = process.env.OPENSHIFT_NODEJS_IP;
 var port 	  = process.env.OPENSHIFT_NODEJS_PORT || 8000;
@@ -19,6 +20,13 @@ exports.getDataPath = function() {
 	return docsDataPath;
 }
 
+exports.getLaTeXPath = function() {
+	if (typeof process.env.OPENSHIFT_DATA_DIR === "undefined") {
+		return "";
+	} else {
+		return path.join(exports.getDataPath, '/latex/bin/x86_64-linux/');
+	}
+}
 
 exports.getHostIP = function() {
 	if (typeof ipAddress === "undefined") {

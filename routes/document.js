@@ -5,6 +5,17 @@ var exec = require('child_process').exec;
 var path = require('path');
 var fs = require('fs');
 
+function createTemplateContent(next) {
+	var texTemplateFile = "public/template.tex";
+	fs.readFile(texTemplateFile, function(error, data) {
+	    if(error) {
+	    	next(error, "");
+	    } else {
+	    	next(null, data);
+	    }
+	});
+}
+
 function documentToTempFile(id, app, dataPath, next) {
 	app.model.getSnapshot(id, function(error, doc) {
 		if (error) {
@@ -23,8 +34,8 @@ function documentToTempFile(id, app, dataPath, next) {
 	});
 }
 
-function createPDF(sourcefile, app, dataPath, next) {
-	var command = "pdflatex -interaction=nonstopmode " + sourcefile;
+function createPDF(sourcefile, app, dataPath, latexpath, next) {
+	var command = latexpath + "pdflatex -interaction=nonstopmode " + sourcefile;
 	console.log(command);
 	exec(command, {cwd: dataPath}, function (error, stdout, stderr) {
 		if (error) {
@@ -42,12 +53,13 @@ router.get('/document/:id/pdf', function(req, res) {
 	var app = req.app;
 	var connectionManager = req.connectionManager;
 	var dataPath = connectionManager.getDataPath();
+	var latexpath = connectionManager.getLaTeXPath();
 	if (id) {
 		documentToTempFile(id, app, dataPath, function(error, sourcepath) {
 			if (error) {
 				res.send(500, "Document (ID:" + id + ") tex creation failed.");
 			} else {
-				createPDF(sourcepath, app, dataPath, function(error, pdffilename){
+				createPDF(sourcepath, app, dataPath, latexpath, function(error, pdffilename){
 					if (error) {
 						res.send(500, "Document (ID:" + id + ") PDF creation failed.");
 					} else {

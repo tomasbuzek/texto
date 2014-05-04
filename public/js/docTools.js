@@ -34,6 +34,59 @@ function loadPDF() {
 	document.getElementById('viewer').src = "/pdf.viewer/viewer.html?file=" + destUrl;
 }
 
+function boldText(editor) {
+	var editor = ace.edit("editor");
+	var text = editor.session.getTextRange(editor.getSelectionRange());
+	editor.insert('\\textbf{' + text + "}");
+}
+
+function italicText(editor) {
+	var editor = ace.edit("editor");
+	var text = editor.session.getTextRange(editor.getSelectionRange());
+	editor.insert('\\textit{' + text + "}");
+}
+
+function underlineText(editor) {
+	var editor = ace.edit("editor");
+	var text = editor.session.getTextRange(editor.getSelectionRange());
+	editor.insert('\\underline{' + text + "}");
+}
+
+function setEditorShortcuts(editor) {
+	editor.commands.addCommand({
+	    name: 'LaTeX - BOLD',
+	    bindKey: {win: 'Ctrl-B',  mac: 'Command-B'},
+	    exec: function(editor) {
+	    	boldText();
+	    },
+	    readOnly: true
+	});
+	editor.commands.addCommand({
+	    name: 'LaTeX - ITALIC',
+	    bindKey: {win: 'Ctrl-I',  mac: 'Command-I'},
+	    exec: function(editor) {
+	    	italicText();
+	    },
+	    readOnly: true
+	});
+	editor.commands.addCommand({
+	    name: 'LaTeX - UNDERLINE',
+	    bindKey: {win: 'Ctrl-U',  mac: 'Command-U'},
+	    exec: function(editor) {
+	    	underlineText();
+	    },
+	    readOnly: true
+	});
+	editor.commands.addCommand({
+	    name: 'LaTeX - PDF',
+	    bindKey: {win: 'Ctrl-P',  mac: 'Command-P'},
+	    exec: function(editor) {
+	    	loadPDF();
+	    },
+	    readOnly: true
+	});
+}
+
 function loadDoc() {
 	window.onload = function() {
 		var editor = ace.edit("editor");
@@ -49,6 +102,7 @@ function loadDoc() {
 				editor.setReadOnly(false);
 				var syntaxSelect = document.getElementById('syntaxLanguage');
 				changeSyntaxHighliting(syntaxSelect.options[syntaxSelect.selectedIndex].value);
+				setEditorShortcuts(editor);
 				loadPDF();
 			}
 		});
