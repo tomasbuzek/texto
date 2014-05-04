@@ -52,6 +52,52 @@ function createPDF(sourcefile, app, dataPath, latexpath, next) {
 	});
 }
 
+router.get('/document/:id/pdffile', function(req, res) {
+	var id = req.params.id;
+	var connectionManager = req.connectionManager;
+	var dataPath = getDocumentFolderPath(connectionManager.getDocsPath(), id);
+	var pdffilename = id + ".pdf";
+	
+	var filePath = path.join(dataPath, pdffilename);
+	
+	if (fs.existsSync(filePath)) {
+		var stat = fs.statSync(filePath);
+
+	    res.writeHead(200, {
+	        'Content-Type': 'application/pdf',
+	        'Content-Length': stat.size
+	    });
+	
+	    var readStream = fs.createReadStream(filePath);
+	    readStream.pipe(res);
+	} else {
+		res.send(404);
+	}
+});
+
+exports.convertToPDF = function(id, app, connectionManager, next) {
+	var latexpath = connectionManager.getLaTeXPath();
+	var dataPath = getDocumentFolderPath(connectionManager.getDocsPath(), id);
+	if (!fs.existsSync(dataPath)){ fs.mkdirSync(dataPath); }
+	if (id) {
+		documentToTempFile(id, app, dataPath, function(error, sourcepath) {
+			if (error) {
+				next("Document (ID:" + id + ") PDF creation failed.", null);
+			} else {
+				createPDF(sourcepath, app, dataPath, latexpath, function(error, pdffilename){
+					if (error) {
+						next("Document (ID:" + id + ") PDF creation failed.", null);
+					} else {
+						next(null, id);
+					}
+				});
+			}
+		});
+	} else {
+		next("Error", null);
+	}
+}
+
 router.get('/document/:id/pdf', function(req, res) {
 	var id = req.params.id;
 	var app = req.app;
@@ -162,4 +208,4 @@ router.get('/document/:id', function(req, res) {
 		});
 });
 
-module.exports = router;
+module.exports.router = router;

@@ -33,7 +33,7 @@ function changeFontSize(increase) {
 }
 
 function loadPDF() {
-	var destUrl = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + "/document/" + documentID + "/pdf";
+	var destUrl = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + "/document/" + documentID + "/pdffile";
 	document.getElementById('viewer').src = "/pdf.viewer/viewer.html?file=" + destUrl;
 }
 
@@ -113,3 +113,28 @@ function loadDoc() {
 }
 
 loadDoc();
+
+var socket;
+function initSocket() {
+	var addr = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+	socket = io.connect('http://127.0.0.1:8000');
+	socket.on('news', function (data) {
+		console.log(data);
+		socket.emit('documentID', { docID: documentID });
+	});
+	socket.on('pdfCreated', function(data) {
+		if (data) {
+			if (data.url != null) {
+				loadPDF(data.url);
+			}
+		}
+	});
+}
+
+function sendCreatePDFMessage() {
+	if (socket) {
+		socket.emit('createPDF', { docID: documentID });
+	}
+}
+
+initSocket();

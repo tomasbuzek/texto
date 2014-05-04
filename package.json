@@ -38,7 +38,8 @@
     "mongodb": "=1.4.3",
     "redis": "*",
     "mongoose": "*",
-    "jade": "*"
+    "jade": "*",
+    "socket.io": "*"
   },
   "devDependencies": {},
   "bundleDependencies": [],

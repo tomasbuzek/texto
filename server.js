@@ -12,7 +12,48 @@ var document  = require('./routes/document');
 
 //Application and DB init
 var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
 var database  = connectionManager.connectDB();
+
+var openedSockets = {};
+var openedClients = {};
+var openedDocuments = {};
+io.sockets.on('connection', function (socket) {
+	socket.emit('news', { hello: 'world' });
+	socket.on('documentID', function (data) {
+		if (openedDocuments[data.docID] == null) {
+			openedDocuments[data.docID] = { clients: [] };
+		}
+		openedDocuments[data.docID].clients.push(socket.id);
+		openedClients[socket.id] = data.docID;
+		openedSockets[socket.id] = socket;
+		console.log("Client:" + socket.id + " opened Document:" + openedClients[socket.id]);
+	});
+	socket.on('createPDF', function(data) {
+		if (data) {
+			if (data.docID) {
+				document.convertToPDF(data.docID, app, connectionManager, function (error, id) {
+					if (openedDocuments[id] != null) {
+						if (openedDocuments[id].clients != null) {
+							openedDocuments[id].clients.forEach(function(entry) {
+								openedSockets[entry].emit('pdfCreated', { url: 'http://' });
+							});
+						}
+					}
+				});
+			}
+		}
+	});
+	socket.on('disconnect', function() {
+		var document = openedClients[socket.id];
+		var clients = openedDocuments[document].clients;
+		openedDocuments[document].clients.splice(clients.indexOf(socket.id), 1);
+		openedClients[socket.id] = null;
+		openedSockets[socket.id] = null;
+		console.log("Client:" + socket.id + " closed Document:" + document);
+    });
+});
 
 var DocumentModel = require('./models/documentModel').createModel(database);
 
@@ -28,12 +69,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req,res,next){
     req.database = database;
     req.app = app;
+    req.io = io;
     req.connectionManager = connectionManager;
     next();
 });
 
 //Routes definition
-app.use('/', document);
+app.use('/', document.router);
 
 var options = {
 	db: {
@@ -51,7 +93,7 @@ sharejs.server.attach(app, options);
 setupTerminationHandlers();
 
 //Server starting
-var server = app.listen(connectionManager.getHostPort(), connectionManager.getHostIP(), function() {
+server.listen(connectionManager.getHostPort(), connectionManager.getHostIP(), function() {
     console.log('%s: Node server started on %s:%d ...',
                 Date(Date.now() ), connectionManager.getHostIP(), connectionManager.getHostPort());
 });
