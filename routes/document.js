@@ -5,6 +5,10 @@ var exec = require('child_process').exec;
 var path = require('path');
 var fs = require('fs');
 
+function getDocumentFolderPath(dataPath, id) {
+	return path.join(dataPath, id);
+}
+
 function createTemplateContent(next) {
 	var texTemplateFile = "public/template.tex";
 	fs.readFile(texTemplateFile, function(error, data) {
@@ -22,7 +26,7 @@ function documentToTempFile(id, app, dataPath, next) {
 			next(error, null);
 		} else {
 			var filename = id + ".tex";
-			var filepath = dataPath + filename;
+			var filepath = path.join(dataPath, filename);
 			fs.writeFile(filepath, doc.snapshot, function(err) {
 			    if(err) {
 			    	next(error, null);
@@ -52,8 +56,9 @@ router.get('/document/:id/pdf', function(req, res) {
 	var id = req.params.id;
 	var app = req.app;
 	var connectionManager = req.connectionManager;
-	var dataPath = connectionManager.getDataPath();
 	var latexpath = connectionManager.getLaTeXPath();
+	var dataPath = getDocumentFolderPath(connectionManager.getDataPath(), id);
+	if (!fs.existsSync(dataPath)){ fs.mkdirSync(dataPath); }
 	if (id) {
 		documentToTempFile(id, app, dataPath, function(error, sourcepath) {
 			if (error) {
@@ -82,16 +87,6 @@ router.get('/document/:id/pdf', function(req, res) {
 	}
 });
 
-router.get('/document/:id/pdfpath', function(req, res) {
-	var id = req.params.id;
-	var dataPath = connectionManager.getDataPath();
-	if (id) {
-		
-	} else {
-		res.send(500, "ID not specified!");
-	}
-});
-
 router.get('/document/:id/create', function(req, res) {
 	var id = req.params.id;
 	var app = req.app;
@@ -115,11 +110,22 @@ router.get('/document/:id/create', function(req, res) {
 router.get('/document/:id/delete', function(req, res) {
 	var id = req.params.id;
 	var app = req.app;
+	var connectionManager = req.connectionManager;
+	var latexpath = connectionManager.getLaTeXPath();
+	var dataPath = getDocumentFolderPath(connectionManager.getDataPath(), id);
 	if (id) {
 		app.model.delete(id, function(error, doc) {
 			if (error) {
 				res.send(500, "Error during document (ID:" + id + ") deletion.");
 			} else {
+				console.log(dataPath);
+				if(fs.existsSync(dataPath)) {
+					fs.readdirSync(dataPath).forEach(function(file, index){
+						console.log(path.join(dataPath, file));
+						fs.unlinkSync(path.join(dataPath, file));
+					});
+					fs.rmdirSync(dataPath);
+				}
 				res.send("Document ID:" + id + " deleted!");
 			}
 		});
