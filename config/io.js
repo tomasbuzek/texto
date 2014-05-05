@@ -46,14 +46,16 @@ module.exports = function(server, app, connectionManager, document) {
 			}
 		});
 		socket.on('disconnect', function() {
-			var document = openedClients[socket.id];
-			var clients = openedDocuments[document].clients;
-			openedDocuments[document].clients.splice(clients.indexOf(socket.id), 1);
+			var docID = openedClients[socket.id];
+			var clients = openedDocuments[docID].clients;
+			openedDocuments[docID].clients.splice(clients.indexOf(socket.id), 1);
 			openedClients[socket.id] = null;
 			openedSockets[socket.id] = null;
-			openedDocuments[document].clients
+			if (openedDocuments[docID].clients.length == 0) {
+				document.deleteDocumentFiles(connectionManager.getDocsPath(), docID);
+			}
 			updateViewersNumber(document);
-			console.log("Client:" + socket.id + " closed Document:" + document);
+			console.log("Client:" + socket.id + " closed Document:" + docID);
 	    });
 	});
 	return io;

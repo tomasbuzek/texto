@@ -52,14 +52,7 @@ function createPDF(sourcefile, app, dataPath, latexpath, next) {
 	});
 }
 
-router.get('/document/:id/pdffile', function(req, res) {
-	var id = req.params.id;
-	var connectionManager = req.connectionManager;
-	var dataPath = getDocumentFolderPath(connectionManager.getDocsPath(), id);
-	var pdffilename = id + ".pdf";
-	
-	var filePath = path.join(dataPath, pdffilename);
-	
+function sendPDF(res, filePath) {
 	if (fs.existsSync(filePath)) {
 		var stat = fs.statSync(filePath);
 
@@ -72,6 +65,24 @@ router.get('/document/:id/pdffile', function(req, res) {
 	    readStream.pipe(res);
 	} else {
 		res.send(404);
+	}
+}
+
+router.get('/document/:id/pdffile', function(req, res) {
+	var id = req.params.id;
+	var app = req.app;
+	var connectionManager = req.connectionManager;
+	var dataPath = getDocumentFolderPath(connectionManager.getDocsPath(), id);
+	var pdffilename = id + ".pdf";
+	
+	var filePath = path.join(dataPath, pdffilename);
+	
+	if (!fs.existsSync(filePath)) {
+		exports.convertToPDF(id, app, connectionManager, function (log, id, error) {
+			sendPDF(res, filePath);
+		});
+	} else {
+		sendPDF(res, filePath);
 	}
 });
 
@@ -156,6 +167,17 @@ router.get('/document/:id/create', function(req, res) {
 	}
 });
 
+exports.deleteDocumentFiles = function(docsPath, id) {
+	var dataPath = getDocumentFolderPath(docsPath, id);
+	if(fs.existsSync(dataPath)) {
+		fs.readdirSync(dataPath).forEach(function(file, index){
+			console.log(path.join(dataPath, file));
+			fs.unlinkSync(path.join(dataPath, file));
+		});
+		fs.rmdirSync(dataPath);
+	}
+} 
+
 router.get('/document/:id/delete', function(req, res) {
 	var id = req.params.id;
 	var app = req.app;
@@ -168,13 +190,7 @@ router.get('/document/:id/delete', function(req, res) {
 				res.send(500, "Error during document (ID:" + id + ") deletion.");
 			} else {
 				console.log(dataPath);
-				if(fs.existsSync(dataPath)) {
-					fs.readdirSync(dataPath).forEach(function(file, index){
-						console.log(path.join(dataPath, file));
-						fs.unlinkSync(path.join(dataPath, file));
-					});
-					fs.rmdirSync(dataPath);
-				}
+				exports.deleteDocumentFiles(connectionManager.getDocsPath(), id);
 				res.send("Document ID:" + id + " deleted!");
 			}
 		});
