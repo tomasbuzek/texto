@@ -4,7 +4,17 @@ html(lang="en")
 		meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
 		title Texto - text editor
 		link(rel="stylesheet" type="text/css" href="/css/editor.css")
-
+		script(type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js")
+		script(type="text/javascript" src="/js/indexTools.js")
+		-function formatDate(date) {
+			-var d = date.getDate();
+			-var M = date.getMonth();
+			-var y = date.getFullYear();
+			-var h = date.getHours();
+			-var m = date.getMinutes();
+			-var s = date.getSeconds();
+			-return d + '.' + M + '.' + y + ' ' + h + ':' + m + ':' + s;
+		-}
 	body
 		div(id="header")
 			h1(id="logo")
@@ -20,5 +30,34 @@ html(lang="en")
 		div(id="splitterContainer")
 			if user
 				| Seznam dokumentů uživatele ???
+				table(id="documentsList")
+					thead
+						tr
+							th ID
+							th Jméno
+							th Vytvořen
+							th Uživatelé
+							th
+					tbody
+						each doc in docs
+							tr
+								td #{doc._id}
+								td
+									a(href=doc.url target="_blank") #{doc.name}
+									br
+									input(id="renameDocInput#{doc._id}")
+									input(type="button" value="Přejmenovat" onclick="renameDoc('#{doc._id}', document.getElementById('renameDocInput#{doc._id}').value)")
+								td #{formatDate(doc.created)}
+								td
+									each user in doc.users
+										a(href="mailto:#{user}") #{user}
+										input(type="button" value="Odebrat" onclick="removeUser('#{doc._id}', '#{user}')")
+										br
+									input(id="addUserInput#{doc._id}")
+									input(type="button" value="Přidat" onclick="addUser('#{doc._id}', document.getElementById('addUserInput#{doc._id}').value)")
+								td
+									input(type="button" value="Vymazat" onclick="deleteDoc('" + doc._id + "')")
+				input(type="button" id="createNewDocButton" onclick="createNewDoc();" value="Nový soukromý dokument")
 			else
 				| Vytvořte nový anonymní dokument nebo se přihlašte ???
+				input(type="button" id="createNewDocButton" onclick="createNewDoc();" value="Nový veřejný dokument")

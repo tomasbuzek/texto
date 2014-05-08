@@ -269,4 +269,52 @@ router.get('/document/:id', function(req, res) {
 	});
 });
 
+router.post('/document/:id/adduser', function(req, res) {
+	hasUserAccess(req, res, function(req, res) {
+		var id = req.params.id;
+		var app = req.app;
+		var newUser = req.body.newUser;
+		var DocumentModel = req.documentModel;
+		DocumentModel.update({_id: id}, {'$push': {users: newUser}}, function(err) {
+			if (err) {
+				res.send(500, "Error during adding user:" + newUser + " to document ID: " + id);
+			} else {
+				res.send(200, "User " + newUser + " added to document ID: " + id);
+			}
+		});
+	});
+});
+
+router.post('/document/:id/removeuser', function(req, res) {
+	hasUserAccess(req, res, function(req, res) {
+		var id = req.params.id;
+		var app = req.app;
+		var removeUser = req.body.removeUser;
+		var DocumentModel = req.documentModel;
+		DocumentModel.update({_id: id}, {'$pull': {users: removeUser}}, function(err) {
+			if (err) {
+				res.send(500, "Error during removing user:" + removeUser + " to document ID: " + id);
+			} else {
+				res.send(200, "User " + removeUser + " removed from document ID: " + id);
+			}
+		});
+	});
+});
+
+router.post('/document/:id/rename', function(req, res) {
+	hasUserAccess(req, res, function(req, res) {
+		var id = req.params.id;
+		var app = req.app;
+		var newName = req.body.newName;
+		var DocumentModel = req.documentModel;
+		DocumentModel.update({_id: id}, {'$set': {name: newName}}, function(err) {
+			if (err) {
+				res.send(500, "Error during renaming document ID: " + id);
+			} else {
+				res.send(200, "Document ID: " + id + " renamed to: " + newName);
+			}
+		});
+	});
+});
+
 module.exports.router = router;
