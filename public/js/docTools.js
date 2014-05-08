@@ -57,7 +57,7 @@ function showLog(show) {
 }
 
 function loadPDF() {
-	var destUrl = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + "/document/" + documentID + "/pdffile";
+	var destUrl = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + "/document/" + documentID + "/pdf";
 	document.getElementById('viewer').src = "/pdf.viewer/viewer.html?file=" + destUrl;
 	document.getElementById('createPDFButton').className = "pdfButtonEnabled";
 	document.getElementById('createPDFButton').disabled = false;

@@ -70,8 +70,8 @@ exports.getDatabaseURL = function() {
 	
 	var connectionString =  "mongodb://" +
 	databaseUsername + ":" + databasePassword + "@" +
-	databaseHost 	 + ":" + databasePort;// 	  + "/" +
-	//databaseName;
+	databaseHost 	 + ":" + databasePort; 	  + "/" +
+	databaseName;
 	
 	return connectionString;
 }

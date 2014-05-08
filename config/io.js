@@ -16,7 +16,7 @@ function updateViewersNumber(id) {
 }
 
 module.exports = function(server, app, connectionManager, document) {
-	var io = require('socket.io').listen(server);
+	var io = require('socket.io').listen(server, { log: false });
 	
 	io.sockets.on('connection', function (socket) {
 		socket.emit('news', { hello: 'world' });

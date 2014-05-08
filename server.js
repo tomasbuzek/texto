@@ -13,12 +13,17 @@ var connectionManager = require('./config/connectionManager');
 var document  = require('./routes/document');
 var server = require('http').createServer(app);
 
+//models ======================================================================
+var database  = connectionManager.connectDB();
+var documentModel = require('./models/document').createModel(database);
+var userModel     = require('./models/user');
+
 // configuration ======================================================================
 require('./config/passport')(passport);
 var document = require('./routes/document');
 var io = require('./config/io')(server, app, connectionManager, document);
 
-app.use(require('morgan')({ format: 'dev', immediate: true }));
+//app.use(require('morgan')({ format: 'dev', immediate: true }));
 app.use(require('cookie-parser')());
 app.use(bodyParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -36,6 +41,9 @@ app.use(function(req,res,next){
     req.app = app;
     req.io = io;
     req.connectionManager = connectionManager;
+    req.userModel = userModel;
+    req.documentModel = documentModel;
+    req.passport = passport;
     next();
 });
 
@@ -43,10 +51,6 @@ app.use(function(req,res,next){
 require('./routes/index')(app);
 require('./routes/passport')(app, passport);
 app.use('/', document.router);
-
-// models ======================================================================
-var database  = connectionManager.connectDB();
-var DocumentModel = require('./models/documentModel').createModel(database);
 
 // launch ======================================================================
 setupTerminationHandlers();

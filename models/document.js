@@ -7,11 +7,11 @@ exports.createModel = function(mongoose) {
 
 	//Document schema definition
 	var documentSchema = new Schema({
-		id 		 : ObjectId,
-		name 	 : {type: String, default: 'Unknown'},
-		content	 : {type: String, default: ''},
-		created  : {type: Date,   default: Date.now},
-		modified : {type: Date,   default: Date.now}
+		_id		 : String,
+		name	 : {type: String,  default: 'Unknown'},
+		created	 : {type: Date,    default: Date.now},
+		isPublic : {type: Boolean, default: false},
+		users	 : [String]
 	});
 	
 	return mongoose.model('Document', documentSchema);
