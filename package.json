@@ -47,7 +47,8 @@
     "cookie-parser": "*",
     "express-session": "*",
     "bcrypt-nodejs": "latest",
-    "connect-flash": "*"
+    "connect-flash": "*",
+    "hashids": "*"
   },
   "devDependencies": {},
   "bundleDependencies": [],

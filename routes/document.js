@@ -3,7 +3,11 @@ var router = express.Router();
 
 var exec = require('child_process').exec;
 var path = require('path');
+var url = require('url');
 var fs = require('fs');
+
+var Hashids = require('hashids'),
+hashids = new Hashids("ilovescotchscotchyscotchscotch", 8);
 
 function getDocumentFolderPath(dataPath, id) {
 	return path.join(dataPath, id);
@@ -69,26 +73,45 @@ function sendPDF(res, filePath) {
 }
 
 function hasUserAccess(req, res, next) {
-	var docID = req.docID;
+	var docID = req.params.id;
 	var user  = req.user;
 	var documentModel = req.documentModel;
 	documentModel.findOne({ _id: docID }, function(err, doc) {
-		if (err) {
-			next(req, res, false);
+		if (err || !doc) {
+			res.send(401, 'Access denied');
 		} else {
 			if (doc.isPublic) {
-				next(req, res, true);
+				next(req, res);
 			} else {
 				if (user) {
 					var found = false;
 					doc.users.forEach(function(entry) {
-						if (entry === user.id) { found = true; return; }
+						if (entry === user.email) { found = true; return; }
 					});
-					next(req, res, found);
+					if (found) { next(req, res); }
+					else { res.send(401, 'Access denied'); }
 				} else {
-					next(req, res, false);
+					res.send(401, 'Access denied');
 				}
 			}
+		}
+	});
+}
+
+function generateUniqueDocID(req, res, next) {
+	var generated = false;
+	var documentModel = req.documentModel;
+	var id = hashids.encrypt(Math.floor((Math.random()*1000000000) + 1));
+	
+	console.log("Generated ID: " + id);
+	
+	documentModel.findOne({_id: id}, function(error, doc) {
+		if (doc) {
+			generateUniqueDocID(req, res, function(id) {
+				next(id);
+			});
+		} else {
+			next(id);
 		}
 	});
 }
@@ -131,31 +154,32 @@ exports.deleteDocumentFiles = function(docsPath, id) {
 }
 
 router.get('/document/:id/pdf', function(req, res) {
-	var id = req.params.id;
-	var app = req.app;
-	var connectionManager = req.connectionManager;
-	var dataPath = getDocumentFolderPath(connectionManager.getDocsPath(), id);
-	var pdffilename = id + ".pdf";
-	
-	var filePath = path.join(dataPath, pdffilename);
-	
-	if (!fs.existsSync(filePath)) {
-		exports.convertToPDF(id, app, connectionManager, function (log, id, error) {
+	hasUserAccess(req, res, function(req, res) {
+		var id = req.params.id;
+		var app = req.app;
+		var connectionManager = req.connectionManager;
+		var dataPath = getDocumentFolderPath(connectionManager.getDocsPath(), id);
+		var pdffilename = id + ".pdf";
+		
+		var filePath = path.join(dataPath, pdffilename);
+		
+		if (!fs.existsSync(filePath)) {
+			exports.convertToPDF(id, app, connectionManager, function (log, id, error) {
+				sendPDF(res, filePath);
+			});
+		} else {
 			sendPDF(res, filePath);
-		});
-	} else {
-		sendPDF(res, filePath);
-	}
+		}
+	});
 });
 
-router.get('/document/:id/create', function(req, res) {
-	var id = req.params.id;
-	var app = req.app;
-	var DocumentModel = req.documentModel;
-	var user = req.user;
-	var userID = user ? user.id : "";
-	console.log(userID);
+function createDocument(id, req, res) {
 	if (id) {
+		var app = req.app;
+		var DocumentModel = req.documentModel;
+		var user = req.user;
+		var userEmail = user ? user.email : "";
+		var isPub     = user ? false : true;
 		app.model.create(id, 'text', null, function(error, doc) {
 			if (error) {
 				if (error == "Document already exists") {
@@ -164,48 +188,62 @@ router.get('/document/:id/create', function(req, res) {
 					res.send(500, "Error during document (ID:" + id + ") creation.");
 				}
 			} else {
-				var document = new DocumentModel({_id: id, users: [userID, 12]});
+				var document = new DocumentModel({_id: id, users: [userEmail], isPublic: isPub});
 				document.save(function (err) {
 					if (err) {
 						console.log(err);
 						app.model.delete(id);
 						res.send(500, "Error during document (ID:" + id + ") creation.");
 					} else {
-						res.send(200, "Document ID:" + id + " created!");
+						var url = "http://" + req.get('host') + "/document/" + id;
+						res.json({ _id: id, uri: url, note: ("Document " + id + " created") });
 					}
 				});
 			}
 		});
-	} else {
-		res.send(500, "ID not specified!");
 	}
+}
+
+router.get('/document/create', function(req, res) {
+	generateUniqueDocID(req, res, function(id) {
+		createDocument(id, req, res);
+	});
+});
+
+router.get('/document/:id/create', function(req, res) {
+	var id = req.params.id;
+	createDocument(id, req, res);
 });
 
 router.get('/document/:id/delete', function(req, res) {
-	var id = req.params.id;
-	var app = req.app;
-	var connectionManager = req.connectionManager;
-	var latexpath = connectionManager.getLaTeXPath();
-	var dataPath = getDocumentFolderPath(connectionManager.getDocsPath(), id);
-	if (id) {
+	hasUserAccess(req, res, function(req, res) {
+		var id = req.params.id;
+		var app = req.app;
+		var DocumentModel = req.documentModel;
+		var connectionManager = req.connectionManager;
+		var latexpath = connectionManager.getLaTeXPath();
+		var dataPath = getDocumentFolderPath(connectionManager.getDocsPath(), id);
 		app.model.delete(id, function(error, doc) {
 			if (error) {
 				res.send(500, "Error during document (ID:" + id + ") deletion.");
 			} else {
-				console.log(dataPath);
 				exports.deleteDocumentFiles(connectionManager.getDocsPath(), id);
-				res.send("Document ID:" + id + " deleted!");
+				DocumentModel.remove({_id: id}, function(err) {
+					if (err) {
+						res.send(500, "Error during document (ID:" + id + ") deletion.");
+					} else {
+						res.send("Document ID:" + id + " deleted!");
+					}
+				});
 			}
 		});
-	} else {
-		res.send(500, "ID not specified!");
-	}
+	});
 });
 
 router.get('/document/:id/content', function(req, res) {
-	var id = req.params.id;
-	var app = req.app;
-	if (id) {
+	hasUserAccess(req, res, function(req, res) {
+		var id = req.params.id;
+		var app = req.app;
 		app.model.getSnapshot(id, function(error, doc) {
 			if (error) {
 				res.send(500, "Error during document (ID:" + id + ") opening.");
@@ -213,32 +251,22 @@ router.get('/document/:id/content', function(req, res) {
 				res.send(doc.snapshot);
 			}
 		});
-	} else {
-		res.send(500, "ID not specified!");
-	}
+	});
 });
 
 router.get('/document/:id', function(req, res) {
+	hasUserAccess(req, res, function(req, res) {
 		var id = req.params.id;
 		var app = req.app;
 		var user = req.user;
-		req.docID = id;
-		console.log("/document/:id/");
-		console.log(user);
-		hasUserAccess(req, res, function(req, res, hasAccess) {
-			console.log("hasAccess: " + hasAccess);
-			if (hasAccess) {
-				app.model.getVersion(id, function(error, doc) {
-					if (error) {
-						res.send(404, "Document ID:" + id + " does not exist!");
-					} else {
-						res.render('document', {id: id});
-					}
-				});
+		app.model.getVersion(id, function(error, doc) {
+			if (error) {
+				res.send(404, "Document ID:" + id + " does not exist!");
 			} else {
-				res.send(401, 'Access denied');
+				res.render('document', {id: id});
 			}
 		});
+	});
 });
 
 module.exports.router = router;
