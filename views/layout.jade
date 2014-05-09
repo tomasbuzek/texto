@@ -5,7 +5,7 @@ html(lang="en")
 		link(rel="stylesheet" type="text/css" href="/css/editor.css")
 		script(type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js")
 		script(type="text/javascript" src="/js/indexTools.js")
-		-var title = "Texto - text editor"
+		-var title = "Texto text editor"
 		block head
 		title #{title}
 	body
@@ -16,11 +16,13 @@ html(lang="en")
 			block header
 			div(id="login")
 				if user
-					| Logged in as #{user.name} 
-					a(href="/logout") Log out 
-					img(src=user.picture width="40")
+					a(href="javascript:goToHomePage()")
+						img.loginimg(src=user.picture)
+					p Přihlášen jako #{user.name} | 
+						a(href="/logout") Odhlásit se
 				else
-					a(href="/auth/google") Login with Google
+					p
+						a.loginlink(href="/auth/google") Přihlásit přes Google
 
 		div(id="splitterContainer")
 			block content

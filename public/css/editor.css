@@ -4,6 +4,7 @@ html,body {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
+	font-family: sans-serif;
 }
 h1#logo {
 	display: block;
@@ -20,6 +21,10 @@ h1#logo span {
 h1, h2, h3 {
 	color: white;
 }
+h2 {
+	margin: 20px 20px 0 40px;
+	display: inline-block;
+}
 #header {
 	position: absolute;
 	top: 0;
@@ -29,6 +34,11 @@ h1, h2, h3 {
 	background-color: #222;
 }
 #docTitle {
+	display: inline-block;
+	width: 400px;
+}
+#docTitle input {
+	margin: -3px 0 20px;
 	display: inline-block;
 }
 #splitterContainer {
@@ -94,6 +104,7 @@ h1, h2, h3 {
 	width: 100%;
 	height: 32px;
 	background-color: #474747;
+	background-image: url(../pdf.viewer/images/texture.png);
 	box-shadow: inset 1px 0 0 hsla(0,0%,100%,.08),
               inset 0 1px 1px hsla(0,0%,0%,.15),
               inset 0 -1px 0 hsla(0,0%,100%,.05),
@@ -166,50 +177,145 @@ h1, h2, h3 {
 	float: right;
 }
 #syntaxChangeContainer {
-	width: 130px;
+	width: 140px;
 	float: left;
 	display: inline-block;
 	margin-top: 5px;
 	margin-left: 5px;
 }
 #syntaxLanguage {
-	border: 1px solid #606060;
-	background-color: #808080;
-	color: white;
+	margin: 0 0 0 5px;
+}
+#syntaxLanguage option {
+	color: #333;
 }
 #fontSizeContainer {
 	display: inline-block;
 	margin-left: 5px;
 	padding-top: 3px;
 }
+
+.splitToolbarButton {
+  margin: 0 10px 4px 0;
+  display: inline-block;
+}
+.splitToolbarButton > .toolbarButton {
+  border-radius: 0;
+  float: left;
+}
+
+.toolbarButton,
+.secondaryToolbarButton {
+  border: 0 none;
+  background-color: rgba(0, 0, 0, 0);
+  width: 32px;
+  height: 25px;
+}
+
+.toolbarButton > span {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.toolbarButton[disabled],
+.secondaryToolbarButton[disabled] {
+  opacity: .5;
+}
+
+.toolbarButton.group {
+  margin-right: 0;
+}
+
+.splitToolbarButton.toggled .toolbarButton {
+  margin: 0;
+}
+
+.splitToolbarButton:hover > .toolbarButton,
+.splitToolbarButton:focus > .toolbarButton,
+.splitToolbarButton.toggled > .toolbarButton,
+.toolbarButton.textButton {
+  background-color: hsla(0,0%,0%,.12);
+  background-image: linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
+  background-clip: padding-box;
+  border: 1px solid hsla(0,0%,0%,.35);
+  border-color: hsla(0,0%,0%,.32) transparent hsla(0,0%,0%,.42);
+  box-shadow: 0 1px 0 hsla(0,0%,100%,.05) inset,
+              0 0 1px hsla(0,0%,100%,.15) inset,
+              0 1px 0 hsla(0,0%,100%,.05);
+  -webkit-transition-property: background-color, border-color, box-shadow;
+  -webkit-transition-duration: 150ms;
+  -webkit-transition-timing-function: ease;
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+
+}
+.splitToolbarButton > .toolbarButton:hover,
+.splitToolbarButton > .toolbarButton:focus {
+	background-color: hsla(0,0%,0%,.2);
+	box-shadow: 0 1px 0 hsla(0,0%,100%,.05) inset,
+				0 0 1px hsla(0,0%,100%,.15) inset,
+				0 0 1px hsla(0,0%,0%,.05);
+	z-index: 199;
+}
+.splitToolbarButton > .toolbarButton {
+	position: relative;
+}
+.splitToolbarButton > .toolbarButton:first-child {
+	position: relative;
+	margin: 0;
+	margin-right: -1px;
+	border-top-left-radius: 2px;
+	border-bottom-left-radius: 2px;
+	border-color: hsla(0,0%,0%,.32) transparent hsla(0,0%,0%,.42) hsla(0,0%,0%,.38);
+}
+.splitToolbarButton > .toolbarButton:last-child {
+	position: relative;
+	margin: 0;
+	margin-left: -1px;
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
+	border-color: hsla(0,0%,0%,.32) hsla(0,0%,0%,.38) hsla(0,0%,0%,.42) transparent;
+}
+.splitToolbarButtonSeparator {
+	padding: 8px 0;
+	width: 1px;
+	background-color: hsla(0,0%,0%,.5);
+	z-index: 99;
+	box-shadow: 0 0 0 1px hsla(0,0%,100%,.08);
+	display: inline-block;
+	margin: 5px 0;
+	float: left;
+}
+.toolbarButton::before {
+	position: absolute;
+	display: inline-block;
+	top: 0;
+	left: 4px;
+}
+
 .fontSizeButton {
 	width: 24px;
 	height: 24px;
 	border: 0px;
 	background-color: transparent;
 }
-#fontSizeButtonPlus {
-	background: url(../img/fontSizePlus.png) no-repeat center center;
-	background-size: contain;
+.toolbarButton#fontSizeButtonPlus::before {
+	content: url(../img/fontSizePlus.png);
 }
-#fontSizeButtonMinus {
-	background: url(../img/fontSizeMinus.png) no-repeat center center;
-	background-size: contain;
+.toolbarButton#fontSizeButtonMinus::before {
+	content: url(../img/fontSizeMinus.png);
 }
-#fontSizeButtonBold {
-	margin-left: 20px;
-	background: url(../img/fontBold.png) no-repeat center center;
-	background-size: contain;
+.toolbarButton#fontSizeButtonBold::before {
+	content: url(../img/fontBold.png);
 }
-#fontSizeButtonItalic {
-	margin-left: 2px;
-	background: url(../img/fontItalic.png) no-repeat center center;
-	background-size: contain;
+.toolbarButton#fontSizeButtonItalic::before {
+	content: url(../img/fontItalic.png);
 }
-#fontSizeButtonUnderline {
-	margin-left: 2px;
-	background: url(../img/fontUnderline.png) no-repeat center center;
-	background-size: contain;
+.toolbarButton#fontSizeButtonUnderline::before {
+	content: url(../img/fontUnderline.png);
 }
 #searchTextContainer {
 	float: right;
@@ -219,12 +325,28 @@ h1, h2, h3 {
 #searchTextValue {
 	position: relative;
 	float: left;
-	padding: 0px;
 	margin-top: 5px;
-	height: 20px;
-	border: 1px solid #606060;
-	background-color: #808080;
-	color: white;
+	width: 120px;
+}
+.toolbarField {
+  padding: 3px 6px;
+  margin: 4px 0 4px 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background-color: hsla(0,0%,100%,.09);
+  background-image: linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
+  background-clip: padding-box;
+  border: 1px solid hsla(0,0%,0%,.35);
+  border-color: hsla(0,0%,0%,.32) hsla(0,0%,0%,.38) hsla(0,0%,0%,.42);
+  box-shadow: 0 1px 0 hsla(0,0%,0%,.05) inset,
+              0 1px 0 hsla(0,0%,100%,.05);
+  color: hsl(0,0%,95%);
+  font-size: 12px;
+  line-height: 14px;
+  outline-style: none;
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
 }
 #searchTextButton {
 	padding-bottom: 10px;
@@ -264,7 +386,55 @@ h1, h2, h3 {
 #login {
 	float: right;
 	color: white;
+	height: 50px;
+	padding: 5px;
 }
 #login a {
 	color: white;
+}
+#login p {
+	float: right;
+}
+#login .loginimg {
+	margin: -5px -5px -5px 10px;
+	width: 60px;
+	height: 60px;
+	float: right;
+}
+#center {
+	margin: 50px auto 0 auto;
+	width: 70em;
+	text-align: center;
+}
+/* DOCUMENT TABLE */
+table#documentsList { 
+	color: #333;
+	border-collapse: collapse; border-spacing: 0;
+	border: #333 solid 1px;
+	width: 100%;
+	margin-bottom: 2em;
+}
+table#documentsList td, table#documentsList th {
+	border: 0 none;
+}		
+table#documentsList th {
+	background: #333;
+	color: #FFF; font-weight: bold;
+	height: 40px;
+}
+table#documentsList td {
+	background: #FAFAFA;
+	text-align: center;
+}
+table#documentsList tr:nth-child(even) td {
+	background: #ccc;
+} 
+table#documentsList tr:nth-child(odd) td {
+	background: #FDFDFD;
+}
+table#documentsList table {
+	margin: 0 auto;
+}
+table#documentsList table td {
+	background: transparent !important;
 }

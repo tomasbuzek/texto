@@ -15,30 +15,35 @@ block head
 	script(src="/socket.io/socket.io.js")
 
 block header
-	div(id="docTitle")
+	div#docTitle
 		h2 #{name}
-	input(type="button" value="Vymazat" onclick="deleteDoc('" + id + "')")
+		input(type="button" value="Smazat" onclick="deleteDoc('" + id + "')")
 
 block content
 	div(id="leftPane")
 		div(id="codeToolbar")
 			div(id="syntaxChangeContainer")
 				label(for="syntaxLanguage") Syntaxe:
-				select(id="syntaxLanguage" onchange="changeSyntaxHighliting(this.options[this.selectedIndex].value)")
+				select#syntaxLanguage.toolbarField(onchange="changeSyntaxHighliting(this.options[this.selectedIndex].value)")
 					option(value="plain") Plain
 					option(value="latex") LaTeX
 					option(value="java") Java
 					option(value="cpp") C++
 			div(id="fontSizeContainer")
-				input(type="button" id="fontSizeButtonPlus" class="fontSizeButton" onclick="changeFontSize(true);")
-				input(type="button" id="fontSizeButtonMinus" class="fontSizeButton" onclick="changeFontSize(false);")
-				input(type="button" id="fontSizeButtonBold" class="fontSizeButton" onclick="boldText();")
-				input(type="button" id="fontSizeButtonItalic" class="fontSizeButton" onclick="italicText();")
-				input(type="button" id="fontSizeButtonUnderline" class="fontSizeButton" onclick="underlineText();")
+				.splitToolbarButton
+					button#fontSizeButtonPlus.toolbarButton(onclick="changeFontSize(true);")
+					.splitToolbarButtonSeparator
+					button#fontSizeButtonMinus.toolbarButton(onclick="changeFontSize(false);")
+				.splitToolbarButton
+					button#fontSizeButtonBold.toolbarButton(onclick="boldText();")
+					.splitToolbarButtonSeparator
+					button#fontSizeButtonItalic.toolbarButton(onclick="italicText();")
+					.splitToolbarButtonSeparator
+					button#fontSizeButtonUnderline.toolbarButton(onclick="underlineText();")
 			div(id="createPDFContainer")
 				input(value="Vytvořit PDF" type="button" id="createPDFButton" onclick="sendCreatePDFMessage();" class="pdfButtonEnabled")
 			div(id="searchTextContainer")
-				input(type="text" id="searchTextValue" onkeyup="if (event.keyCode == 13) searchAce(true); else searchAce(false);")
+				input#searchTextValue.toolbarField(type="text" onkeyup="if (event.keyCode == 13) searchAce(true); else searchAce(false);")
 				input(type="button" id="searchTextButton" onclick="searchAce(true);")
 		div(id="editor")
 		script.

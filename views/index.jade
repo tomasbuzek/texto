@@ -2,35 +2,51 @@ extends layout
 
 block content
 	if user
-		| Seznam dokumentů uživatele ???
-		table(id="documentsList")
-			thead
-				tr
-					th ID
-					th Jméno
-					th Vytvořeno
-					th Uživatelé
-					th
-			tbody
-				each doc in docs
+		#center
+			table#documentsList
+				thead
 					tr
-						td #{doc._id}
-						td
-							a(href=doc.url target="_blank") #{doc.name}
-							br
-							input(id="renameDocInput#{doc._id}")
-							input(type="button" value="Přejmenovat" onclick="renameDoc('#{doc._id}', document.getElementById('renameDocInput#{doc._id}').value)")
-						td #{moment(doc.created).format("D.M.YYYY HH:mm:ss")}
-						td
-							each user in doc.users
-								a(href="mailto:#{user}") #{user}
-								input(type="button" value="Odebrat" onclick="removeUser('#{doc._id}', '#{user}')")
+						th ID
+						th Jméno
+						th Vytvořeno
+						th Uživatelé
+						th
+				tbody
+					each doc in docs
+						tr
+							td #{doc._id}
+							td
+								strong
+									a(href=doc.url target="_blank") #{doc.name}
 								br
-							input(id="addUserInput#{doc._id}")
-							input(type="button" value="Přidat" onclick="addUser('#{doc._id}', document.getElementById('addUserInput#{doc._id}').value)")
-						td
-							input(type="button" value="Vymazat" onclick="deleteDoc('" + doc._id + "')")
-		input(type="button" id="createNewDocButton" onclick="createNewDoc();" value="Nový soukromý dokument")
+								input(id="renameDocInput#{doc._id}")
+								input(type="button" value="Přejmenovat" onclick="renameDoc('#{doc._id}', document.getElementById('renameDocInput#{doc._id}').value)")
+							td #{moment(doc.created).format("D.M.YYYY HH:mm:ss")}
+							td
+								table
+									each user in doc.users
+										tr
+											td
+												a(href="mailto:#{user}") #{user}
+											td
+												input(type="button" value="Odebrat" onclick="removeUser('#{doc._id}', '#{user}')")
+									tr
+										td
+											input(id="addUserInput#{doc._id}")
+										td
+											input(type="button" value="Přidat" onclick="addUser('#{doc._id}', document.getElementById('addUserInput#{doc._id}').value)")
+							td
+								button(onclick="deleteDoc('" + doc._id + "')")
+									img(src="img/delete.png")
+			button#createNewDocButton(onclick="createNewDoc();")
+				|Nový soukromý dokument
 	else
-		| Vytvořte nový anonymní dokument nebo se přihlašte ???
-		input(type="button" id="createNewDocButton" onclick="createNewDoc();" value="Nový veřejný dokument")
+		#center
+			img(src="img/newdoc.png")
+			br
+			|Vytvořte nový anonymní dokument nebo se přihlašte
+			br
+			br
+			form(action="/auth/google") 
+				input(type="submit" value="Přihlásit přes Google")
+				input(type="button" id="createNewDocButton" onclick="createNewDoc();" value="Nový veřejný dokument")
