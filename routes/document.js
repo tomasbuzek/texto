@@ -282,13 +282,17 @@ router.post('/document/:id/adduser', function(req, res) {
 		var app = req.app;
 		var newUser = req.body.newUser;
 		var DocumentModel = req.documentModel;
-		DocumentModel.update({_id: id}, {'$push': {users: newUser}}, function(err) {
-			if (err) {
-				res.send(500, "Error during adding user:" + newUser + " to document ID: " + id);
-			} else {
-				res.send(200, "User " + newUser + " added to document ID: " + id);
-			}
-		});
+		if (newUser && newUser != "") {
+			DocumentModel.update({_id: id}, {'$push': {users: newUser}}, function(err) {
+				if (err) {
+					res.send(500, "Error during adding user:" + newUser + " to document ID: " + id);
+				} else {
+					res.send(200, "User " + newUser + " added to document ID: " + id);
+				}
+			});
+		} else {
+			res.send(200, "No user added to document ID: " + id);
+		}
 	});
 });
 
@@ -313,14 +317,18 @@ router.post('/document/:id/rename', function(req, res) {
 		var id = req.params.id;
 		var app = req.app;
 		var newName = req.body.newName;
-		var DocumentModel = req.documentModel;
-		DocumentModel.update({_id: id}, {'$set': {name: newName}}, function(err) {
-			if (err) {
-				res.send(500, "Error during renaming document ID: " + id);
-			} else {
-				res.send(200, "Document ID: " + id + " renamed to: " + newName);
-			}
-		});
+		if (newName && newName != "") {
+			var DocumentModel = req.documentModel;
+			DocumentModel.update({_id: id}, {'$set': {name: newName}}, function(err) {
+				if (err) {
+					res.send(500, "Error during renaming document ID: " + id);
+				} else {
+					res.send(200, "Document ID: " + id + " renamed to: " + newName);
+				}
+			});
+		} else {
+			res.send(200, "Document ID: " + id + " not renamed");
+		}
 	});
 });
 
