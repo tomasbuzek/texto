@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 function getDocumentList(req, res, next) {
 	var user = req.user;
 	var documentModel = req.documentModel;
@@ -20,7 +22,7 @@ function getDocumentList(req, res, next) {
 module.exports = function(app) {
 	app.get('/', function(req, res){
 		getDocumentList(req, res, function(error, docs) {
-			res.render('index.jade',{ user : req.user, docs: docs });
+			res.render('index.jade',{ user : req.user, docs: docs, moment: moment });
 		});
 	});
 };

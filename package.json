@@ -48,7 +48,8 @@
     "express-session": "*",
     "bcrypt-nodejs": "latest",
     "connect-flash": "*",
-    "hashids": "*"
+    "hashids": "*",
+    "moment": "*"
   },
   "devDependencies": {},
   "bundleDependencies": [],

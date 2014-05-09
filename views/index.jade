@@ -1,16 +1,5 @@
 extends layout
 
-block head
-	-function formatDate(date) {
-		-var d = date.getDate();
-		-var M = date.getMonth();
-		-var y = date.getFullYear();
-		-var h = date.getHours();
-		-var m = date.getMinutes();
-		-var s = date.getSeconds();
-		-return d + '.' + M + '.' + y + ' ' + h + ':' + m + ':' + s;
-	-}
-
 block content
 	if user
 		| Seznam dokumentů uživatele ???
@@ -19,7 +8,7 @@ block content
 				tr
 					th ID
 					th Jméno
-					th Vytvořen
+					th Vytvořeno
 					th Uživatelé
 					th
 			tbody
@@ -31,7 +20,7 @@ block content
 							br
 							input(id="renameDocInput#{doc._id}")
 							input(type="button" value="Přejmenovat" onclick="renameDoc('#{doc._id}', document.getElementById('renameDocInput#{doc._id}').value)")
-						td #{formatDate(doc.created)}
+						td #{moment(doc.created).format("D.M.YYYY HH:mm:ss")}
 						td
 							each user in doc.users
 								a(href="mailto:#{user}") #{user}
