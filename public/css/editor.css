@@ -17,6 +17,9 @@ h1#logo {
 h1#logo span {
 	display: none;
 }
+h1, h2, h3 {
+	color: white;
+}
 #header {
 	position: absolute;
 	top: 0;
@@ -24,6 +27,9 @@ h1#logo span {
 	height: 60px;
 	width: 100%;
 	background-color: #222;
+}
+#docTitle {
+	display: inline-block;
 }
 #splitterContainer {
 	position: absolute;

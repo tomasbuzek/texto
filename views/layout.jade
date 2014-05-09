@@ -1,0 +1,26 @@
+doctype html
+html(lang="en")
+	head
+		meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+		link(rel="stylesheet" type="text/css" href="/css/editor.css")
+		script(type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js")
+		script(type="text/javascript" src="/js/indexTools.js")
+		-var title = "Texto - text editor"
+		block head
+		title #{title}
+	body
+		div(id="header")
+			a(href="javascript:goToHomePage()")
+				h1(id="logo")
+					span Texto - TeX editor
+			block header
+			div(id="login")
+				if user
+					| Logged in as #{user.name} 
+					a(href="/logout") Log out 
+					img(src=user.picture width="40")
+				else
+					a(href="/auth/google") Login with Google
+
+		div(id="splitterContainer")
+			block content

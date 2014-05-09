@@ -1,3 +1,8 @@
+function goToHomePage() {
+	var homePage = "http://" + window.location.host;
+	window.location.replace(homePage);
+}
+
 function createNewDoc() {
 	$.ajax({
 	    type: "GET",
@@ -6,7 +11,7 @@ function createNewDoc() {
 	    	if (msg.uri) { window.location.replace(msg.uri); }
 	    },
 		error: function (error) {
-			alert(error);
+			alert("Chyba při vytváření dokumentu");
 		}
 	});
 }
@@ -16,10 +21,10 @@ function deleteDoc(id) {
 	    type: "GET",
 	    url: "http://" + window.location.host + "/document/" + id + "/delete/",
 	    success: function (msg) {
-	    	if (msg) { location.reload(); }
+	    	if (msg) { window.location.replace("http://" + window.location.host); }
 	    },
 		error: function (error) {
-			alert(error);
+			alert("Chyba při odstraňování dokumentu");
 		}
 	});
 }
@@ -34,7 +39,7 @@ function addUser(id, newUser) {
 	    	if (msg) { location.reload(); }
 	    },
 		error: function (error) {
-			alert(error);
+			alert("Chyba při přidávání uživatele");
 		}
 	});
 }
@@ -49,7 +54,7 @@ function removeUser(id, removeUser) {
 	    	if (msg) { location.reload(); }
 	    },
 		error: function (error) {
-			alert(error);
+			alert("Chyba při odstraňování uživatele");
 		}
 	});
 }
@@ -64,7 +69,7 @@ function renameDoc(id, newName) {
 	    	if (msg) { location.reload(); }
 	    },
 		error: function (error) {
-			alert(error);
+			alert("Chyba při přejmenovávání dokumentu");
 		}
 	});
 }

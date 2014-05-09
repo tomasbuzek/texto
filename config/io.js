@@ -54,7 +54,7 @@ module.exports = function(server, app, connectionManager, document) {
 			if (openedDocuments[docID].clients.length == 0) {
 				document.deleteDocumentFiles(connectionManager.getDocsPath(), docID);
 			}
-			updateViewersNumber(document);
+			updateViewersNumber(docID);
 			console.log("Client:" + socket.id + " closed Document:" + docID);
 	    });
 	});

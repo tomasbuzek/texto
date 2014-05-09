@@ -259,11 +259,18 @@ router.get('/document/:id', function(req, res) {
 		var id = req.params.id;
 		var app = req.app;
 		var user = req.user;
-		app.model.getVersion(id, function(error, doc) {
-			if (error) {
-				res.send(404, "Document ID:" + id + " does not exist!");
+		var documentModel = req.documentModel;
+		documentModel.findOne({_id: id}, function(error, doc) {
+			if (doc) {
+				app.model.getVersion(id, function(error, docSJS) {
+					if (error) {
+						res.send(404, "Document ID:" + id + " does not exist!");
+					} else {
+						res.render('document', {id: id, name: doc.name, user: user});
+					}
+				});
 			} else {
-				res.render('document', {id: id});
+				res.send(404, "Document ID:" + id + " does not exist!");
 			}
 		});
 	});
