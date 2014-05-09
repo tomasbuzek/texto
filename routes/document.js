@@ -317,4 +317,26 @@ router.post('/document/:id/rename', function(req, res) {
 	});
 });
 
+router.get('/latex/install/:id', function(req, res) {
+	var latexpath = req.connectionManager.getLaTeXPath();
+	var packageName = req.params.id;
+	if (packageName) {
+		var command = latexpath + "tlmgr install " + packageName;
+		console.log(command);
+		
+		exec(command, {cwd: latexpath}, function (error, stdout, stderr) {
+			console.log(error);
+			console.log(stderr);
+			console.log(stdout);
+			if (error) {
+				res.send(500, "Error during LaTeX package installation");
+			} else {
+				res.send(200, "LaTeX package " + packageName + " installed");
+			}
+		});
+	} else {
+		res.send(500, "No LaTeX package name specified");
+	}
+});
+
 module.exports.router = router;
